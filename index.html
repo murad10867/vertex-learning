@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0b1020">
   <meta name="description" content="Vertex Learning - learn mathematics, science, languages, programming and more.">
   <title>Vertex Learning</title>
-  <link rel="stylesheet" href="style.css?v=grade1-page-next">
-  <script src="app.js?v=grade1-page-next" defer></script>
+  <link rel="stylesheet" href="style.css?v=grade1-notebook">
+  <script src="app.js?v=grade1-notebook" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -18,6 +18,7 @@
     <nav class="topnav" aria-label="Main navigation">
       <button class="nav-link active" data-view="learn" type="button">Learn</button>
       <button class="nav-link" data-view="dashboard" type="button">Dashboard</button>
+      <button id="notebookBtn" class="nav-link notebook-nav" type="button">📓 Notebook</button>
     </nav>
   </header>
 
@@ -126,6 +127,28 @@
         <span id="lessonAnswerStatus" class="lesson-answer-status"></span>
         <button id="lessonNextBtn" class="primary-btn" type="button">Next →</button>
       </footer>
+    </div>
+  </section>
+
+  <section id="notebook" class="notebook" hidden aria-label="Vertex Learning notebook">
+    <header class="notebook-head">
+      <button id="closeNotebookBtn" class="secondary-btn" type="button">← Back</button>
+      <div>
+        <small>VERTEX LEARNING</small>
+        <strong>Notebook · 10,000 pages</strong>
+      </div>
+      <div class="notebook-jump">
+        <label for="notebookPageInput">Go to page</label>
+        <input id="notebookPageInput" type="number" min="1" max="10000" value="1">
+        <button id="notebookGoBtn" type="button">Go</button>
+      </div>
+    </header>
+    <div class="notebook-status">
+      <span id="notebookCurrentPage">Page 1 of 10,000</span>
+      <span>Scroll down for the next pages · notes save automatically</span>
+    </div>
+    <div id="notebookScroller" class="notebook-scroller">
+      <div id="notebookVirtualSpace" class="notebook-virtual-space"></div>
     </div>
   </section>
 
