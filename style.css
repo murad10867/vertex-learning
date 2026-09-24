@@ -621,3 +621,26 @@ footer{
   .lesson-player-nav .secondary-btn{grid-column:1}
   .lesson-player-nav .primary-btn{grid-column:2}
 }
+
+
+/* In-page next button on every lesson page */
+.page-next-wrap{
+  display:flex;
+  justify-content:flex-end;
+  margin-top:32px;
+  padding-top:20px;
+  border-top:1px solid var(--line);
+}
+.page-next-btn{
+  min-width:180px;
+  min-height:48px;
+}
+.page-next-btn:disabled{
+  opacity:.38;
+  cursor:not-allowed;
+  box-shadow:none;
+}
+@media(max-width:520px){
+  .page-next-wrap{justify-content:stretch}
+  .page-next-btn{width:100%}
+}
