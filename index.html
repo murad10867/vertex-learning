@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b1020">
+  <meta name="description" content="Vertex Learning - learn mathematics, science, languages, programming and more.">
+  <title>Vertex Learning</title>
+  <link rel="stylesheet" href="style.css?v=1">
+  <script src="app.js?v=1" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="Vertex Learning home">
+      <span class="brand-mark">V</span>
+      <span><strong>Vertex Learning</strong><small>Learn. Build. Grow.</small></span>
+    </a>
+    <nav class="topnav" aria-label="Main navigation">
+      <button class="nav-link active" data-view="learn" type="button">Learn</button>
+      <button class="nav-link" data-view="dashboard" type="button">Dashboard</button>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <span class="eyebrow">VERTEX LEARNING</span>
+        <h1>Learn something<br><span>awesome today.</span></h1>
+        <p>Choose a subject, pick your level, and start learning with clear lessons and practice.</p>
+        <button id="exploreBtn" class="primary-btn" type="button">Explore subjects</button>
+      </div>
+      <div class="hero-card" aria-label="Featured learning path">
+        <div class="hero-card-top">
+          <span>FEATURED PATH</span>
+          <span class="pill">4+</span>
+        </div>
+        <div class="code-icon">&lt;/&gt;</div>
+        <h2>Programming</h2>
+        <p>Start with logic and coding basics, then build real projects.</p>
+        <div class="progress-row"><span>Starter path</span><strong>6 lessons</strong></div>
+        <div class="progress"><i style="width:16%"></i></div>
+      </div>
+    </section>
+
+    <section id="learnView" class="view active">
+      <section class="controls" aria-label="Subject filters">
+        <label class="search-box">
+          <span>⌕</span>
+          <input id="subjectSearch" type="search" placeholder="Search subjects..." autocomplete="off">
+        </label>
+        <div class="age-filters" id="ageFilters">
+          <button class="active" data-age="all" type="button">All ages</button>
+          <button data-age="1" type="button">1+</button>
+          <button data-age="3" type="button">3+</button>
+          <button data-age="4" type="button">4+</button>
+          <button data-age="10" type="button">10+</button>
+        </div>
+      </section>
+
+      <section class="subjects-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">SUBJECTS</span>
+            <h2>Choose what to learn</h2>
+          </div>
+          <span id="subjectCount" class="subject-count">13 subjects</span>
+        </div>
+        <div id="subjectGrid" class="subject-grid"></div>
+      </section>
+    </section>
+
+    <section id="dashboardView" class="view">
+      <section class="dashboard-header">
+        <span class="eyebrow">YOUR DASHBOARD</span>
+        <h1>Keep learning.</h1>
+        <p>Your progress is saved on this device.</p>
+      </section>
+
+      <section class="stats-grid">
+        <article><span>Subjects started</span><strong id="startedCount">0</strong></article>
+        <article><span>Lessons completed</span><strong id="completedCount">0</strong></article>
+        <article><span>Current streak</span><strong id="streakCount">0 days</strong></article>
+      </section>
+
+      <section class="continue-section">
+        <div class="section-heading">
+          <div>
+            <span class="eyebrow">CONTINUE</span>
+            <h2>Your learning</h2>
+          </div>
+        </div>
+        <div id="continueGrid" class="continue-grid"></div>
+      </section>
+    </section>
+  </main>
+
+  <section id="subjectModal" class="modal" hidden aria-modal="true" role="dialog" aria-labelledby="modalTitle">
+    <div class="modal-backdrop" data-close-modal></div>
+    <div class="modal-card">
+      <button class="modal-close" data-close-modal type="button" aria-label="Close">×</button>
+      <div class="modal-icon" id="modalIcon"></div>
+      <span class="eyebrow" id="modalAge"></span>
+      <h2 id="modalTitle"></h2>
+      <p id="modalDescription"></p>
+      <div id="lessonList" class="lesson-list"></div>
+    </div>
+  </section>
+
+  <footer>
+    <span>Vertex Learning</span>
+    <small>Vertex Systems AI © 2026</small>
+  </footer>
+</body>
+</html>
