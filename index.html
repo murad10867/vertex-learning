@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0b1020">
   <meta name="description" content="Vertex Learning - learn mathematics, science, languages, programming and more.">
   <title>Vertex Learning</title>
-  <link rel="stylesheet" href="style.css?v=1">
-  <script src="app.js?v=1" defer></script>
+  <link rel="stylesheet" href="style.css?v=grade1-9subj">
+  <script src="app.js?v=grade1-9subj" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -24,46 +24,48 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <span class="eyebrow">VERTEX LEARNING</span>
-        <h1>Learn something<br><span>awesome today.</span></h1>
-        <p>Choose a subject, pick your level, and start learning with clear lessons and practice.</p>
-        <button id="exploreBtn" class="primary-btn" type="button">Explore subjects</button>
+        <span class="eyebrow">VERTEX LEARNING · GRADE 1</span>
+        <h1>Grade 1 starts<br><span>right here.</span></h1>
+        <p>9 subjects. 5 units in every subject. 5 lessons in every unit.</p>
+        <button id="exploreBtn" class="primary-btn" type="button">Explore Grade 1</button>
       </div>
       <div class="hero-card" aria-label="Featured learning path">
         <div class="hero-card-top">
-          <span>FEATURED PATH</span>
-          <span class="pill">4+</span>
+          <span>GRADE 1 PATH</span>
+          <span class="pill">Grade 1</span>
         </div>
-        <div class="code-icon">&lt;/&gt;</div>
-        <h2>Programming</h2>
-        <p>Start with logic and coding basics, then build real projects.</p>
-        <div class="progress-row"><span>Starter path</span><strong>6 lessons</strong></div>
+        <div class="code-icon">123</div>
+        <h2>Mathematics</h2>
+        <p>Start with numbers, then build addition, subtraction, shapes, measurement, and data skills.</p>
+        <div class="progress-row"><span>5 units</span><strong>25 lessons</strong></div>
         <div class="progress"><i style="width:16%"></i></div>
       </div>
     </section>
 
     <section id="learnView" class="view active">
-      <section class="controls" aria-label="Subject filters">
+      <section class="grade-banner" aria-label="Current grade">
+        <div>
+          <span class="eyebrow">CURRENT LEVEL</span>
+          <h2>Grade 1</h2>
+          <p>9 subjects · 5 units per subject · 5 lessons per unit</p>
+        </div>
+        <span class="grade-badge">1</span>
+      </section>
+
+      <section class="controls" aria-label="Subject search">
         <label class="search-box">
           <span>⌕</span>
-          <input id="subjectSearch" type="search" placeholder="Search subjects..." autocomplete="off">
+          <input id="subjectSearch" type="search" placeholder="Search Grade 1 subjects..." autocomplete="off">
         </label>
-        <div class="age-filters" id="ageFilters">
-          <button class="active" data-age="all" type="button">All ages</button>
-          <button data-age="1" type="button">1+</button>
-          <button data-age="3" type="button">3+</button>
-          <button data-age="4" type="button">4+</button>
-          <button data-age="10" type="button">10+</button>
-        </div>
       </section>
 
       <section class="subjects-section">
         <div class="section-heading">
           <div>
-            <span class="eyebrow">SUBJECTS</span>
-            <h2>Choose what to learn</h2>
+            <span class="eyebrow">GRADE 1 SUBJECTS</span>
+            <h2>Choose a subject</h2>
           </div>
-          <span id="subjectCount" class="subject-count">13 subjects</span>
+          <span id="subjectCount" class="subject-count">9 subjects · 225 lessons</span>
         </div>
         <div id="subjectGrid" class="subject-grid"></div>
       </section>
@@ -102,7 +104,8 @@
       <span class="eyebrow" id="modalAge"></span>
       <h2 id="modalTitle"></h2>
       <p id="modalDescription"></p>
-      <div id="lessonList" class="lesson-list"></div>
+      <div id="subjectSummary" class="subject-summary"></div>
+      <div id="lessonList" class="unit-list"></div>
     </div>
   </section>
 
