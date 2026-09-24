@@ -839,3 +839,130 @@ function renderUnits(subject){
     lessonList.appendChild(card);
   });
 }
+
+
+/* ---------- 10,000-page scrolling notebook ---------- */
+const NOTEBOOK_TOTAL_PAGES = 10000;
+const NOTEBOOK_PAGE_HEIGHT = 940;
+const NOTEBOOK_PAGE_KEY = 'vertexLearningNotebookPageV1:';
+const notebookBtn = document.getElementById('notebookBtn');
+const notebook = document.getElementById('notebook');
+const closeNotebookBtn = document.getElementById('closeNotebookBtn');
+const notebookScroller = document.getElementById('notebookScroller');
+const notebookVirtualSpace = document.getElementById('notebookVirtualSpace');
+const notebookCurrentPage = document.getElementById('notebookCurrentPage');
+const notebookPageInput = document.getElementById('notebookPageInput');
+const notebookGoBtn = document.getElementById('notebookGoBtn');
+
+let notebookOpen = false;
+let notebookSaveTimers = Object.create(null);
+
+function notebookPageStorageKey(page){
+  return NOTEBOOK_PAGE_KEY + page;
+}
+
+function getNotebookPageText(page){
+  return localStorage.getItem(notebookPageStorageKey(page)) || '';
+}
+
+function saveNotebookPage(page, value){
+  localStorage.setItem(notebookPageStorageKey(page), value);
+}
+
+function makeNotebookPage(page){
+  const wrap = document.createElement('section');
+  wrap.className = 'notebook-page';
+  wrap.dataset.page = String(page);
+  wrap.style.top = ((page - 1) * NOTEBOOK_PAGE_HEIGHT + 20) + 'px';
+
+  const number = document.createElement('div');
+  number.className = 'notebook-page-number';
+  number.textContent = 'Page ' + page;
+
+  const textarea = document.createElement('textarea');
+  textarea.className = 'notebook-page-text';
+  textarea.setAttribute('aria-label', 'Notebook page ' + page);
+  textarea.placeholder = 'Write your notes here...';
+  textarea.value = getNotebookPageText(page);
+
+  textarea.addEventListener('input', () => {
+    clearTimeout(notebookSaveTimers[page]);
+    notebookSaveTimers[page] = setTimeout(() => saveNotebookPage(page, textarea.value), 180);
+  });
+  textarea.addEventListener('blur', () => saveNotebookPage(page, textarea.value));
+
+  wrap.appendChild(number);
+  wrap.appendChild(textarea);
+  return wrap;
+}
+
+function notebookVisibleRange(){
+  const top = notebookScroller.scrollTop;
+  const height = notebookScroller.clientHeight || window.innerHeight;
+  const first = Math.max(1, Math.floor(top / NOTEBOOK_PAGE_HEIGHT) - 2);
+  const last = Math.min(NOTEBOOK_TOTAL_PAGES, Math.ceil((top + height) / NOTEBOOK_PAGE_HEIGHT) + 2);
+  return { first, last };
+}
+
+function renderNotebookWindow(){
+  if(!notebookOpen) return;
+  const {first,last} = notebookVisibleRange();
+  const keep = new Set();
+
+  for(let page=first; page<=last; page++){
+    keep.add(String(page));
+    if(!notebookVirtualSpace.querySelector('.notebook-page[data-page="'+page+'"]')){
+      notebookVirtualSpace.appendChild(makeNotebookPage(page));
+    }
+  }
+
+  Array.from(notebookVirtualSpace.querySelectorAll('.notebook-page')).forEach(el => {
+    if(!keep.has(el.dataset.page)){
+      const textarea = el.querySelector('textarea');
+      if(textarea) saveNotebookPage(Number(el.dataset.page), textarea.value);
+      el.remove();
+    }
+  });
+
+  const current = Math.min(
+    NOTEBOOK_TOTAL_PAGES,
+    Math.max(1, Math.floor((notebookScroller.scrollTop + NOTEBOOK_PAGE_HEIGHT * .42) / NOTEBOOK_PAGE_HEIGHT) + 1)
+  );
+  notebookCurrentPage.textContent = 'Page ' + current.toLocaleString() + ' of 10,000';
+  notebookPageInput.value = String(current);
+}
+
+function openNotebook(){
+  notebookOpen = true;
+  notebook.hidden = false;
+  document.body.style.overflow = 'hidden';
+  notebookVirtualSpace.style.height = (NOTEBOOK_TOTAL_PAGES * NOTEBOOK_PAGE_HEIGHT + 40) + 'px';
+  renderNotebookWindow();
+}
+
+function closeNotebook(){
+  Array.from(notebookVirtualSpace.querySelectorAll('.notebook-page')).forEach(el => {
+    const textarea = el.querySelector('textarea');
+    if(textarea) saveNotebookPage(Number(el.dataset.page), textarea.value);
+  });
+  notebookOpen = false;
+  notebook.hidden = true;
+  document.body.style.overflow = '';
+}
+
+function goToNotebookPage(){
+  const requested = Math.round(Number(notebookPageInput.value) || 1);
+  const page = Math.max(1, Math.min(NOTEBOOK_TOTAL_PAGES, requested));
+  notebookScroller.scrollTop = (page - 1) * NOTEBOOK_PAGE_HEIGHT;
+  renderNotebookWindow();
+  const target = notebookVirtualSpace.querySelector('.notebook-page[data-page="'+page+'"] textarea');
+  if(target) target.focus({preventScroll:true});
+}
+
+notebookBtn.addEventListener('click', openNotebook);
+closeNotebookBtn.addEventListener('click', closeNotebook);
+notebookGoBtn.addEventListener('click', goToNotebookPage);
+notebookPageInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter') goToNotebookPage();
+});
+notebookScroller.addEventListener('scroll', renderNotebookWindow, {passive:true});
