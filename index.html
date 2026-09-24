@@ -6,8 +6,8 @@
   <meta name="theme-color" content="#0b1020">
   <meta name="description" content="Vertex Learning - learn mathematics, science, languages, programming and more.">
   <title>Vertex Learning</title>
-  <link rel="stylesheet" href="style.css?v=grade1-9subj">
-  <script src="app.js?v=grade1-9subj" defer></script>
+  <link rel="stylesheet" href="style.css?v=grade1-lessons10">
+  <script src="app.js?v=grade1-lessons10" defer></script>
 </head>
 <body>
   <header class="topbar">
@@ -106,6 +106,26 @@
       <p id="modalDescription"></p>
       <div id="subjectSummary" class="subject-summary"></div>
       <div id="lessonList" class="unit-list"></div>
+    </div>
+  </section>
+
+  <section id="lessonPlayer" class="lesson-player" hidden aria-label="Lesson player">
+    <div class="lesson-shell">
+      <header class="lesson-player-head">
+        <button id="closeLessonBtn" class="lesson-exit" type="button">← Back to subject</button>
+        <div class="lesson-player-title">
+          <small id="lessonBreadcrumb">Grade 1</small>
+          <strong id="lessonPlayerTitle">Lesson</strong>
+        </div>
+        <span id="lessonPageCounter" class="lesson-page-counter">Page 1 of 10</span>
+      </header>
+      <div id="lessonProgressDots" class="lesson-page-dots" aria-label="Lesson pages"></div>
+      <main id="lessonPageContent" class="lesson-page-content"></main>
+      <footer class="lesson-player-nav">
+        <button id="lessonBackBtn" class="secondary-btn" type="button">← Previous</button>
+        <span id="lessonAnswerStatus" class="lesson-answer-status"></span>
+        <button id="lessonNextBtn" class="primary-btn" type="button">Next →</button>
+      </footer>
     </div>
   </section>
 
