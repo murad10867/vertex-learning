@@ -757,3 +757,29 @@ footer{
     font-size:15px;
   }
 }
+
+
+/* All grades home */
+.brand-button{border:0;background:transparent;text-align:left;cursor:pointer}
+.levels-section{padding:20px 0 70px}
+.grade-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.grade-card{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:13px;
+  min-height:110px;padding:17px;border:1px solid var(--line);border-radius:17px;
+  background:linear-gradient(155deg,var(--panel-2),var(--panel));color:var(--text);text-align:left;
+}
+.grade-card:hover{transform:translateY(-2px);border-color:rgba(124,108,255,.45)}
+.grade-card-badge{
+  display:grid;place-items:center;width:50px;height:50px;border-radius:15px;
+  background:rgba(124,108,255,.14);color:#d8d4ff;font-size:20px;font-weight:950;
+}
+.grade-card-copy strong{display:block;font-size:16px}
+.grade-card-copy small{display:block;margin-top:5px;color:var(--muted);font-size:10px;line-height:1.4}
+.grade-card-arrow{font-size:20px;color:#9388ff}
+.college-card{grid-column:span 2}
+.college-card .grade-card-badge{background:linear-gradient(135deg,var(--accent),#4bbaa9);color:#fff}
+.back-levels{margin-top:28px}
+#booksView[hidden]{display:none}
+@media(max-width:900px){.grade-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:680px){.grade-grid{grid-template-columns:repeat(2,1fr)}.college-card{grid-column:span 2}}
+@media(max-width:420px){.grade-grid{grid-template-columns:1fr}.college-card{grid-column:auto}}
