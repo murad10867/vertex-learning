@@ -643,6 +643,30 @@ function questionsForPage(info,page){
   return Array.from({length:10},(_,i)=>genericQuestion(info,base+i));
 }
 
+function goToNextLessonPage(){
+  if(!lessonSession) return;
+  if(lessonSession.page===9){
+    completeCurrentLesson();
+    return;
+  }
+  setLessonPage(lessonSession.page+1);
+}
+
+function addInPageNextButton(label, disabled=false){
+  const wrap=document.createElement('div');
+  wrap.className='page-next-wrap';
+  const btn=document.createElement('button');
+  btn.type='button';
+  btn.id='pageNextBtn';
+  btn.className='primary-btn page-next-btn';
+  btn.textContent=label;
+  btn.disabled=disabled;
+  btn.addEventListener('click',goToNextLessonPage);
+  wrap.appendChild(btn);
+  lessonPageContent.appendChild(wrap);
+  return btn;
+}
+
 function renderLessonPage(){
   const info=currentLessonInfo();
   if(!info) return;
@@ -674,6 +698,7 @@ function renderLessonPage(){
       ).join('')+'</div>';
     lessonNextBtn.disabled=false;
     lessonNextBtn.textContent='Next →';
+    addInPageNextButton('Next page →');
     return;
   }
 
@@ -687,6 +712,7 @@ function renderLessonPage(){
       '<div class="example-steps">'+x.steps.map((s,i)=>'<div><strong>Step '+(i+1)+':</strong> '+s+'</div>').join('')+'</div></article>';
     lessonNextBtn.disabled=false;
     lessonNextBtn.textContent='Start questions →';
+    addInPageNextButton('Start questions →');
     return;
   }
 
@@ -737,6 +763,7 @@ function renderQuestionPage(info,page){
 
   lessonNextBtn.disabled=true;
   lessonNextBtn.textContent=page===9?'Finish lesson ✓':'Next 10 questions →';
+  addInPageNextButton(page===9?'Finish lesson ✓':'Next page →', true);
   updateQuestionGate(page);
 }
 
@@ -747,6 +774,8 @@ function updateQuestionGate(page){
   if(score) score.textContent=answered+' / 10 answered · '+correct+' correct';
   lessonAnswerStatus.textContent=answered<10 ? 'Answer '+(10-answered)+' more question'+(10-answered===1?'':'s') : correct+'/10 correct';
   lessonNextBtn.disabled=answered<10;
+  const pageNextBtn=document.getElementById('pageNextBtn');
+  if(pageNextBtn) pageNextBtn.disabled=answered<10;
 }
 
 function completeCurrentLesson(){
@@ -771,11 +800,7 @@ function completeCurrentLesson(){
 lessonBackBtn.addEventListener('click',()=>{
   if(lessonSession&&lessonSession.page>0) setLessonPage(lessonSession.page-1);
 });
-lessonNextBtn.addEventListener('click',()=>{
-  if(!lessonSession) return;
-  if(lessonSession.page===9){completeCurrentLesson();return;}
-  setLessonPage(lessonSession.page+1);
-});
+lessonNextBtn.addEventListener('click',goToNextLessonPage);
 closeLessonBtn.addEventListener('click',leaveLesson);
 
 /* Replace the old lesson rows with real lesson launch buttons. */
