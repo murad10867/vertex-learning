@@ -321,3 +321,496 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&!modal.hidd
 
 renderSubjects();
 renderDashboard();
+
+
+/* ---------- 10-page lesson player ---------- */
+const LESSON_STATE_KEY = 'vertexLearningLessonStateGrade1V1';
+const lessonPlayer = document.getElementById('lessonPlayer');
+const closeLessonBtn = document.getElementById('closeLessonBtn');
+const lessonBreadcrumb = document.getElementById('lessonBreadcrumb');
+const lessonPlayerTitle = document.getElementById('lessonPlayerTitle');
+const lessonPageCounter = document.getElementById('lessonPageCounter');
+const lessonProgressDots = document.getElementById('lessonProgressDots');
+const lessonPageContent = document.getElementById('lessonPageContent');
+const lessonBackBtn = document.getElementById('lessonBackBtn');
+const lessonNextBtn = document.getElementById('lessonNextBtn');
+const lessonAnswerStatus = document.getElementById('lessonAnswerStatus');
+
+let lessonSession = null;
+let pageAnswers = {};
+
+function loadLessonState(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(LESSON_STATE_KEY)||'{}');
+    return saved&&typeof saved==='object'?saved:{};
+  }catch(_){return {};}
+}
+let lessonState=loadLessonState();
+function saveLessonState(){localStorage.setItem(LESSON_STATE_KEY,JSON.stringify(lessonState));}
+function lessonStateKey(subjectId,unitIndex,lessonIndex){return subjectId+':'+unitIndex+':'+lessonIndex;}
+
+function subjectById(id){return subjects.find(s=>s.id===id);}
+function currentLessonInfo(){
+  if(!lessonSession) return null;
+  const subject=subjectById(lessonSession.subjectId);
+  if(!subject) return null;
+  const unit=subject.units[lessonSession.unitIndex];
+  const title=unit.lessons[lessonSession.lessonIndex];
+  return {subject,unit,title};
+}
+
+function openLesson(subjectId,unitIndex,lessonIndex){
+  const subject=subjectById(subjectId);
+  if(!subject||!subject.units[unitIndex]||!subject.units[unitIndex].lessons[lessonIndex]) return;
+  const key=lessonStateKey(subjectId,unitIndex,lessonIndex);
+  const savedPage=Number(lessonState[key]&&lessonState[key].page);
+  lessonSession={
+    subjectId,
+    unitIndex,
+    lessonIndex,
+    page:Number.isInteger(savedPage)?Math.max(0,Math.min(9,savedPage)):0
+  };
+  pageAnswers={};
+  modal.hidden=true;
+  lessonPlayer.hidden=false;
+  document.body.style.overflow='hidden';
+  renderLessonPage();
+}
+
+function leaveLesson(){
+  if(!lessonSession) return;
+  const info=currentLessonInfo();
+  lessonPlayer.hidden=true;
+  document.body.style.overflow='';
+  if(info) openSubject(info.subject.id);
+  lessonSession=null;
+  pageAnswers={};
+}
+
+function setLessonPage(page){
+  if(!lessonSession) return;
+  lessonSession.page=Math.max(0,Math.min(9,page));
+  const key=lessonStateKey(lessonSession.subjectId,lessonSession.unitIndex,lessonSession.lessonIndex);
+  lessonState[key]={page:lessonSession.page};
+  saveLessonState();
+  pageAnswers={};
+  renderLessonPage();
+  lessonPlayer.scrollTo({top:0,behavior:'smooth'});
+}
+
+function pageType(page){
+  if(page<=2) return 'EXPLANATION';
+  if(page===3) return 'WORKED EXAMPLE';
+  return 'QUESTIONS';
+}
+
+function lessonExplanation(info,page){
+  const subjectName=info.subject.name;
+  const topic=info.title;
+  const unit=info.unit.title;
+  const subjectTips={
+    math:['Look at the numbers carefully.','Use objects or drawings to help.','Check your answer by trying it again.'],
+    science:['Observe what you can see.','Ask what changes and what stays the same.','Use simple evidence to explain your idea.'],
+    english:['Say the sound or word aloud.','Look for the pattern in the word or sentence.','Read it again to check that it makes sense.'],
+    arabic:['Look carefully at the letter or word.','Say the sound slowly and clearly.','Read from right to left and practice writing it.'],
+    islamic:['Read the idea carefully.','Think about how we use it in daily life.','Practice the good action or remembrance.'],
+    'computer-science':['Follow the steps in order.','Notice what each tool or command does.','Try the sequence again to check it.'],
+    art:['Look closely at lines, shapes, and colors.','Try the idea with your own drawing.','There can be more than one creative result.'],
+    sports:['Move safely and keep your space clear.','Practice slowly before going faster.','Stop if something feels unsafe.'],
+    geography:['Look for place, direction, or position clues.','Use maps and symbols to help.','Connect the idea to places you know.']
+  };
+  const tips=subjectTips[info.subject.id]||['Look carefully.','Try it step by step.','Check your thinking.'];
+
+  if(page===0){
+    return {
+      title:'Meet the idea: '+topic,
+      lead:'This Grade 1 lesson is part of '+subjectName+' → '+unit+'. We will learn the main idea in small, clear steps.',
+      cards:[
+        ['What we learn',topic+' is the focus of this lesson. First, notice what the idea means and where you may see it.'],
+        ['Why it matters','This skill helps you understand '+subjectName.toLowerCase()+' and prepares you for the next lesson.'],
+        ['Your goal','By the end, you should be able to recognize the idea, explain it simply, and answer practice questions.']
+      ]
+    };
+  }
+  if(page===1){
+    return {
+      title:'Key ideas for '+topic,
+      lead:'Use these three ideas while you learn. You do not need to rush—one idea at a time is enough.',
+      cards:[
+        ['Key idea 1',tips[0]],
+        ['Key idea 2',tips[1]],
+        ['Key idea 3',tips[2]]
+      ]
+    };
+  }
+  return {
+    title:'Remember and try',
+    lead:'Before the example, say the lesson idea in your own words and try a tiny practice step.',
+    cards:[
+      ['Remember','The lesson is about '+topic+'. Keep the main idea simple and clear.'],
+      ['Try','Make your own small example of '+topic+' using something you know.'],
+      ['Check','Ask yourself: “Can I explain this to someone else?” If yes, you are ready for the example.']
+    ]
+  };
+}
+
+function workedExample(info){
+  const examples={
+    math:['Example: We have 3 counters and add 2 more.','Start with 3.','Add 2 more counters.','Count them all: 5.'],
+    science:['Example: Is a plant living or nonliving?','A plant grows.','A plant needs water and light.','So a plant is a living thing.'],
+    english:['Example: Read the word “cat.”','Look at each letter: c-a-t.','Say the sounds slowly.','Blend them together: cat.'],
+    arabic:['Example: Read the letter ب with fatha.','Find the letter: ب','Add the fatha: بَ','Say the sound clearly: “ba”.'],
+    islamic:['Example: Showing good manners.','Someone greets you with salam.','Listen and respond kindly.','Good manners make our actions better.'],
+    'computer-science':['Example: Give a computer a sequence.','Step 1: open the drawing app.','Step 2: choose a color.','Step 3: draw a shape. Order matters.'],
+    art:['Example: Make a picture from shapes.','Draw a large circle.','Add two small circles.','Use lines and color to turn the shapes into your own picture.'],
+    sports:['Example: Practice a safe jump.','Bend your knees.','Jump with two feet.','Land softly with bent knees.'],
+    geography:['Example: Give a direction.','The library is to the right of the school.','Start at the school.','Move right to reach the library.']
+  };
+  const x=examples[info.subject.id]||['Example for '+info.title,'Look at the idea.','Try it step by step.','Check the result.'];
+  return {title:x[0],steps:x.slice(1)};
+}
+
+function rotateOptions(correct,wrong1,wrong2,seed){
+  const all=[correct,wrong1,wrong2];
+  const shift=((seed%3)+3)%3;
+  return all.slice(shift).concat(all.slice(0,shift));
+}
+
+function mcq(prompt,correct,wrong1,wrong2,seed){
+  return {prompt,correct,options:rotateOptions(correct,wrong1,wrong2,seed)};
+}
+
+const FACT_BANKS={
+  science:[
+    ['Which one is living?','plant','rock','chair'],
+    ['What does a plant need?','water','plastic','a toy'],
+    ['Which body part helps you see?','eyes','ears','feet'],
+    ['Which sense helps you hear?','hearing','taste','touch'],
+    ['Which is weather?','rain','table','pencil'],
+    ['What shines in the daytime sky?','Sun','shoe','book'],
+    ['Which can be pushed?','a ball','a smell','a sound'],
+    ['A magnet can attract some things made of…','metal','paper only','water'],
+    ['Which is a healthy habit?','washing hands','never sleeping','eating only candy'],
+    ['Where can a fish live?','water','a desk','a backpack'],
+    ['Which is nonliving?','rock','cat','tree'],
+    ['A baby animal can…','grow','stay the same forever','turn into a chair']
+  ],
+  english:[
+    ['Which word begins with C?','cat','dog','sun'],
+    ['Which is a vowel?','A','B','T'],
+    ['Which word is an action?','run','blue','chair'],
+    ['Which word names a person?','teacher','jump','happy'],
+    ['Which sentence starts correctly?','The cat runs.','the cat runs.','the Cat runs.'],
+    ['Which mark can end a sentence?','.',',','/'],
+    ['Which word rhymes with cat?','hat','dog','sun'],
+    ['Which word begins with S?','sun','map','pig'],
+    ['Which is a describing word?','big','run','desk'],
+    ['Which sentence has a capital letter?','I can read.','i can read.','i Can read.'],
+    ['Which word is a noun?','book','jump','quickly'],
+    ['Which word has short a?','map','moon','feet']
+  ],
+  arabic:[
+    ['Which is an Arabic letter?','ب','B','2'],
+    ['Which word starts with ب?','باب','قلم','نهر'],
+    ['Which mark is a fatha?','َ','ُ','ِ'],
+    ['Which mark is a damma?','ُ','َ','ِ'],
+    ['Which mark is a kasra?','ِ','َ','ُ'],
+    ['Arabic is usually read…','right to left','left to right only','bottom to top'],
+    ['Which letter is م?','م','س','ل'],
+    ['Which letter is ن?','ن','ف','ك'],
+    ['Which word means “book”?','كتاب','باب','بيت'],
+    ['Which word means “house”?','بيت','قلم','شمس'],
+    ['Which letter is و?','و','ر','د'],
+    ['Which letter is ي?','ي','ب','ت']
+  ],
+  islamic:[
+    ['Who created us?','Allah','a toy','a book'],
+    ['What greeting do Muslims use?','Assalamu alaikum','Good night only','No greeting'],
+    ['Which is a good manner?','honesty','lying','hurting others'],
+    ['Before prayer we learn to make…','wudu','a drawing','a race'],
+    ['How many daily prayers are there?','5','2','10'],
+    ['Which surah opens the Quran?','Al-Fatihah','An-Nas','Al-Falaq'],
+    ['Which is kind?','helping others','pushing others','taking things'],
+    ['We should respect…','parents','nobody','only toys'],
+    ['Before eating we remember…','Allah','a game only','nothing'],
+    ['Which is good cleanliness?','washing hands','never washing','making a mess'],
+    ['The Shahada teaches us about…','faith','colors','sports'],
+    ['Good manners include…','kind words','shouting at everyone','breaking things']
+  ],
+  'computer-science':[
+    ['Which part shows pictures and words?','monitor','mouse pad only','chair'],
+    ['Which part helps type letters?','keyboard','cup','shoe'],
+    ['Which can move the pointer?','mouse','book','speaker only'],
+    ['An algorithm is…','steps in order','a random mess','a color'],
+    ['Which is safer online?','ask a trusted adult','share every password','talk to anyone'],
+    ['A password should be…','private','written for strangers','shared with everyone'],
+    ['Drag and drop uses…','pointer movement','sleeping','jumping'],
+    ['Which is software?','an app','a desk','a pencil'],
+    ['Which is hardware?','keyboard','a song','a website idea'],
+    ['What should you do before going online?','ask permission','hide it','tell nobody'],
+    ['Kind online behavior means…','use respectful words','send mean messages','share secrets'],
+    ['To save work means…','keep it for later','erase everything','turn it into paper']
+  ],
+  art:[
+    ['Which is a primary color?','red','brown','gray'],
+    ['Which is a shape?','circle','loud','fast'],
+    ['A pattern…','repeats','never repeats','has no design'],
+    ['Which can show texture?','rough lines','a smell only','a sound only'],
+    ['Warm colors can include…','red','blue only','gray only'],
+    ['Cool colors can include…','blue','orange only','brown only'],
+    ['A straight line is…','not curved','always a circle','a color'],
+    ['Which tool can draw?','pencil','plate','shoe'],
+    ['A collage can use…','different pieces','only air','nothing'],
+    ['Artists can use color to show…','mood','only numbers','only time'],
+    ['Which has four equal sides?','square','triangle','circle'],
+    ['A creative project can have…','your own ideas','only one possible answer','no choices']
+  ],
+  sports:[
+    ['Before activity, it is good to…','warm up','sit forever','run into people'],
+    ['A safe landing uses…','bent knees','locked knees','closed eyes'],
+    ['Which uses balance?','standing on one foot','sleeping','reading'],
+    ['When playing a team game, we should…','take turns','ignore rules','push others'],
+    ['Exercise helps the body stay…','healthy','asleep all day','still forever'],
+    ['A cool down happens…','after activity','before waking up only','never'],
+    ['To catch safely, watch the…','ball','floor only','wall behind you'],
+    ['A target throw aims at…','a target','anything random','another person'],
+    ['Good teamwork means…','working together','arguing','never sharing'],
+    ['Which is movement?','jumping','sleeping','sitting still'],
+    ['When space is crowded, we should…','slow down','run faster','push through'],
+    ['Water is important after activity because it helps…','hydrate the body','make shoes bigger','change the weather']
+  ],
+  geography:[
+    ['A map shows…','places','only sounds','only food'],
+    ['A map key explains…','symbols','weather only','homework only'],
+    ['Opposite of left is…','right','near','up'],
+    ['Which is land?','mountain','ocean','river'],
+    ['Which is water?','sea','hill','road'],
+    ['North, south, east, and west are…','directions','colors','foods'],
+    ['Which is a place in a community?','school','triangle','number'],
+    ['A city is…','a place where people live','a weather type','a color'],
+    ['Rain is a type of…','weather','map symbol only','direction'],
+    ['A continent is…','a large land area','a small pencil','a cloud'],
+    ['Which can be on a map?','road','taste','sound'],
+    ['Near means…','close','very far','underwater only']
+  ]
+};
+
+function mathQuestion(info,seed){
+  const t=info.title.toLowerCase();
+  const a=1+(seed*3)%9;
+  const b=1+(seed*5)%8;
+  if(t.includes('subtract')){
+    const big=Math.max(a,b)+3, small=Math.min(a,b);
+    const ans=big-small;
+    return mcq(big+' − '+small+' = ?',String(ans),String(ans+1),String(Math.max(0,ans-1)),seed);
+  }
+  if(t.includes('add')||t.includes('sum')||t.includes('fact')){
+    const ans=a+b;
+    return mcq(a+' + '+b+' = ?',String(ans),String(ans+1),String(Math.max(0,ans-1)),seed);
+  }
+  if(t.includes('shape')){
+    const shapes=[['triangle','3'],['square','4'],['rectangle','4']];
+    const x=shapes[seed%shapes.length];
+    return mcq('How many sides does a '+x[0]+' have?',x[1],x[1]==='3'?'4':'3','5',seed);
+  }
+  if(t.includes('time')){
+    const hour=1+(seed%11);
+    return mcq('Which shows '+hour+" o'clock?",hour+':00',hour+':30',(hour+1)+':00',seed);
+  }
+  if(t.includes('compare')){
+    const x=a+5,y=b;
+    const correct=String(Math.max(x,y));
+    return mcq('Which number is greater: '+x+' or '+y+'?',correct,correct===String(x)?String(y):String(x),'They are equal',seed);
+  }
+  const n=1+(seed*4)%98;
+  return mcq('What number comes after '+n+'?',String(n+1),String(n-1),String(n+2),seed);
+}
+
+function genericQuestion(info,seed){
+  if(info.subject.id==='math') return mathQuestion(info,seed);
+  const bank=FACT_BANKS[info.subject.id]||[
+    ['Which choice best matches this lesson?','the lesson idea','an unrelated idea','nothing'],
+    ['What should you do first?','look carefully','guess without looking','skip everything'],
+    ['How can you learn well?','practice','never try','ignore feedback']
+  ];
+  const item=bank[seed%bank.length];
+  return mcq(item[0],item[1],item[2],item[3],seed);
+}
+
+function questionsForPage(info,page){
+  const practicePage=page-4;
+  const base=(info.unit.title.length+info.title.length+lessonSession.unitIndex*17+lessonSession.lessonIndex*23+practicePage*10);
+  return Array.from({length:10},(_,i)=>genericQuestion(info,base+i));
+}
+
+function renderLessonPage(){
+  const info=currentLessonInfo();
+  if(!info) return;
+  const page=lessonSession.page;
+
+  lessonBreadcrumb.textContent='Grade 1 · '+info.subject.name+' · '+info.unit.title;
+  lessonPlayerTitle.textContent=info.title;
+  lessonPageCounter.textContent='Page '+(page+1)+' of 10';
+
+  lessonProgressDots.innerHTML='';
+  for(let i=0;i<10;i++){
+    const dot=document.createElement('i');
+    if(i<page) dot.className='done';
+    if(i===page) dot.className='active';
+    lessonProgressDots.appendChild(dot);
+  }
+
+  lessonBackBtn.disabled=page===0;
+  lessonAnswerStatus.textContent='';
+
+  if(page<=2){
+    const x=lessonExplanation(info,page);
+    lessonPageContent.innerHTML=
+      '<span class="lesson-type">EXPLANATION '+(page+1)+' OF 3</span>'+
+      '<h1>'+x.title+'</h1>'+
+      '<p class="page-lead">'+x.lead+'</p>'+
+      '<div class="explanation-grid">'+x.cards.map(c=>
+        '<article class="explain-card"><span>LEARN</span><h3>'+c[0]+'</h3><p>'+c[1]+'</p></article>'
+      ).join('')+'</div>';
+    lessonNextBtn.disabled=false;
+    lessonNextBtn.textContent='Next →';
+    return;
+  }
+
+  if(page===3){
+    const x=workedExample(info);
+    lessonPageContent.innerHTML=
+      '<span class="lesson-type">WORKED EXAMPLE</span>'+
+      '<h1>'+info.title+'</h1>'+
+      '<p class="page-lead">Watch one example from start to finish before you begin the questions.</p>'+
+      '<article class="worked-example"><small>EXAMPLE</small><h3>'+x.title+'</h3>'+
+      '<div class="example-steps">'+x.steps.map((s,i)=>'<div><strong>Step '+(i+1)+':</strong> '+s+'</div>').join('')+'</div></article>';
+    lessonNextBtn.disabled=false;
+    lessonNextBtn.textContent='Start questions →';
+    return;
+  }
+
+  renderQuestionPage(info,page);
+}
+
+function renderQuestionPage(info,page){
+  const questions=questionsForPage(info,page);
+  pageAnswers={};
+  const qPage=page-3;
+
+  lessonPageContent.innerHTML=
+    '<div class="question-page-head"><div><span class="lesson-type">QUESTIONS · PAGE '+qPage+' OF 6</span>'+
+    '<h1>'+info.title+'</h1></div><span id="questionScore" class="question-score">0 / 10 answered</span></div>'+
+    '<p class="page-lead">Answer all 10 questions to continue.</p><div id="questionList" class="question-list"></div>';
+
+  const list=document.getElementById('questionList');
+  questions.forEach((q,index)=>{
+    const card=document.createElement('article');
+    card.className='question-card';
+    card.innerHTML=
+      '<div class="question-title"><span class="question-number">'+(index+1)+'</span><strong>'+q.prompt+'</strong></div>'+
+      '<div class="answer-options"></div><div class="question-feedback"></div>';
+    const options=card.querySelector('.answer-options');
+    const feedback=card.querySelector('.question-feedback');
+
+    q.options.forEach(option=>{
+      const btn=document.createElement('button');
+      btn.type='button';
+      btn.textContent=option;
+      btn.addEventListener('click',()=>{
+        if(pageAnswers[index]) return;
+        const correct=option===q.correct;
+        pageAnswers[index]={answered:true,correct};
+        card.classList.add(correct?'correct':'wrong');
+        feedback.textContent=correct?'Correct!':'Not quite. The correct answer is '+q.correct+'.';
+        Array.from(options.children).forEach(b=>{
+          b.disabled=true;
+          if(b.textContent===q.correct) b.classList.add('correct-answer');
+          else if(b===btn&&!correct) b.classList.add('wrong-answer');
+        });
+        updateQuestionGate(page);
+      });
+      options.appendChild(btn);
+    });
+    list.appendChild(card);
+  });
+
+  lessonNextBtn.disabled=true;
+  lessonNextBtn.textContent=page===9?'Finish lesson ✓':'Next 10 questions →';
+  updateQuestionGate(page);
+}
+
+function updateQuestionGate(page){
+  const answered=Object.keys(pageAnswers).length;
+  const correct=Object.values(pageAnswers).filter(x=>x.correct).length;
+  const score=document.getElementById('questionScore');
+  if(score) score.textContent=answered+' / 10 answered · '+correct+' correct';
+  lessonAnswerStatus.textContent=answered<10 ? 'Answer '+(10-answered)+' more question'+(10-answered===1?'':'s') : correct+'/10 correct';
+  lessonNextBtn.disabled=answered<10;
+}
+
+function completeCurrentLesson(){
+  const info=currentLessonInfo();
+  if(!info) return;
+  const key=lessonKey(info.subject.id,lessonSession.unitIndex,lessonSession.lessonIndex);
+  progress[key]=true;
+  saveProgress();
+  markActivity();
+  const stateKey=lessonStateKey(info.subject.id,lessonSession.unitIndex,lessonSession.lessonIndex);
+  lessonState[stateKey]={page:9,completed:true};
+  saveLessonState();
+  lessonPlayer.hidden=true;
+  document.body.style.overflow='';
+  lessonSession=null;
+  pageAnswers={};
+  renderSubjects();
+  renderDashboard();
+  openSubject(info.subject.id);
+}
+
+lessonBackBtn.addEventListener('click',()=>{
+  if(lessonSession&&lessonSession.page>0) setLessonPage(lessonSession.page-1);
+});
+lessonNextBtn.addEventListener('click',()=>{
+  if(!lessonSession) return;
+  if(lessonSession.page===9){completeCurrentLesson();return;}
+  setLessonPage(lessonSession.page+1);
+});
+closeLessonBtn.addEventListener('click',leaveLesson);
+
+/* Replace the old lesson rows with real lesson launch buttons. */
+function renderUnits(subject){
+  lessonList.innerHTML='';
+  subject.units.forEach((unit,ui)=>{
+    const totals=unitTotals(subject,ui);
+    const card=document.createElement('section');
+    card.className='unit-card'+(ui===0?' open':'');
+    const head=document.createElement('button');
+    head.type='button';
+    head.className='unit-head';
+    head.innerHTML=
+      '<span class="unit-head-left"><span class="unit-number">'+(ui+1)+'</span><span><strong>'+unit.title+'</strong><small>5 lessons · 10 pages each</small></span></span>'+
+      '<span class="unit-progress">'+totals.done+'/5 complete</span>';
+    const lessons=document.createElement('div');
+    lessons.className='unit-lessons';
+
+    unit.lessons.forEach((title,li)=>{
+      const done=isComplete(subject.id,ui,li);
+      const state=lessonState[lessonStateKey(subject.id,ui,li)];
+      const resume=state&&!done&&Number.isInteger(Number(state.page))&&Number(state.page)>0;
+      const row=document.createElement('div');
+      row.className='unit-lesson'+(done?' completed':'');
+      row.innerHTML=
+        '<span class="unit-lesson-number">'+(li+1)+'</span>'+
+        '<div><strong>'+title+'</strong><small>10 pages · 3 explanations · 1 example · 60 questions</small></div>'+
+        '<button type="button">'+(done?'Review lesson':resume?'Continue':'Start lesson')+'</button>';
+      row.querySelector('button').addEventListener('click',()=>openLesson(subject.id,ui,li));
+      lessons.appendChild(row);
+    });
+
+    head.addEventListener('click',()=>card.classList.toggle('open'));
+    card.appendChild(head);
+    card.appendChild(lessons);
+    lessonList.appendChild(card);
+  });
+}
