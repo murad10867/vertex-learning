@@ -1,160 +1,144 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#0b1020">
-  <meta name="description" content="Vertex Learning - learn mathematics, science, languages, programming and more.">
-  <title>Vertex Learning</title>
-  <link rel="stylesheet" href="style.css?v=grade1-notebook">
-  <script src="app.js?v=grade1-notebook" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0b1020">
+<title>Vertex Learning</title>
+<link rel="stylesheet" href="style.css?v=allgrades3">
+<script src="app.js?v=allgrades3" defer></script>
 </head>
 <body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Vertex Learning home">
-      <span class="brand-mark">V</span>
-      <span><strong>Vertex Learning</strong><small>Learn. Build. Grow.</small></span>
-    </a>
-    <nav class="topnav" aria-label="Main navigation">
-      <button class="nav-link active" data-view="learn" type="button">Learn</button>
-      <button class="nav-link" data-view="dashboard" type="button">Dashboard</button>
-      <button id="notebookBtn" class="nav-link notebook-nav" type="button">📓 Notebook</button>
-    </nav>
-  </header>
+<header class="topbar">
+  <button id="homeBtn" class="brand brand-button" type="button">
+    <span class="brand-mark">V</span>
+    <span><strong>Vertex Learning</strong><small>Grade 1 → College</small></span>
+  </button>
+  <nav class="topnav">
+    <button class="nav-link active" data-view="learn" type="button">Learn</button>
+    <button class="nav-link" data-view="dashboard" type="button">Dashboard</button>
+    <button id="notebookBtn" class="nav-link" type="button">📓 Notebook</button>
+  </nav>
+</header>
 
-  <main>
-    <section class="hero">
-      <div class="hero-copy">
-        <span class="eyebrow">VERTEX LEARNING · GRADE 1</span>
-        <h1>Grade 1 starts<br><span>right here.</span></h1>
-        <p>9 subjects. 5 units in every subject. 5 lessons in every unit.</p>
-        <button id="exploreBtn" class="primary-btn" type="button">Explore Grade 1</button>
-      </div>
-      <div class="hero-card" aria-label="Featured learning path">
-        <div class="hero-card-top">
-          <span>GRADE 1 PATH</span>
-          <span class="pill">Grade 1</span>
+<main>
+  <section id="learnView" class="view active">
+    <section id="gradeHome">
+      <section class="hero grade-hero">
+        <div class="hero-copy">
+          <span class="eyebrow">VERTEX LEARNING</span>
+          <h1>Choose your<br><span>grade.</span></h1>
+          <p>Grade 1 through Grade 12, plus College. Pick a level, then choose a subject book.</p>
         </div>
-        <div class="code-icon">123</div>
-        <h2>Mathematics</h2>
-        <p>Start with numbers, then build addition, subtraction, shapes, measurement, and data skills.</p>
-        <div class="progress-row"><span>5 units</span><strong>25 lessons</strong></div>
-        <div class="progress"><i style="width:16%"></i></div>
-      </div>
-    </section>
-
-    <section id="learnView" class="view active">
-      <section class="grade-banner" aria-label="Current grade">
-        <div>
-          <span class="eyebrow">CURRENT LEVEL</span>
-          <h2>Grade 1</h2>
-          <p>9 subjects · 5 units per subject · 5 lessons per unit</p>
+        <div class="hero-card">
+          <div class="hero-card-top"><span>LEARNING PATH</span><span class="pill">13 levels</span></div>
+          <div class="code-icon">V</div>
+          <h2>Grade → Book → Unit → Lesson</h2>
+          <p>Each book has 5 units, each unit has 5 lessons, and every lesson has 10 pages.</p>
+          <div class="progress-row"><span>Notebook</span><strong>10,000 pages</strong></div>
+          <div class="progress"><i style="width:100%"></i></div>
         </div>
-        <span class="grade-badge">1</span>
       </section>
 
-      <section class="controls" aria-label="Subject search">
-        <label class="search-box">
-          <span>⌕</span>
-          <input id="subjectSearch" type="search" placeholder="Search Grade 1 subjects..." autocomplete="off">
-        </label>
+      <section class="levels-section">
+        <div class="section-heading">
+          <div><span class="eyebrow">LEVELS</span><h2>Choose a grade</h2></div>
+          <span class="subject-count">Grade 1 → College</span>
+        </div>
+        <div id="gradeGrid" class="grade-grid"></div>
+      </section>
+    </section>
+
+    <section id="booksView" hidden>
+      <button id="backToGradesBtn" class="secondary-btn back-levels" type="button">← All grades</button>
+      <section class="grade-banner">
+        <div>
+          <span class="eyebrow">CURRENT LEVEL</span>
+          <h2 id="currentGradeTitle">Grade 1</h2>
+          <p id="currentGradeSummary"></p>
+        </div>
+        <span id="currentGradeBadge" class="grade-badge">1</span>
+      </section>
+
+      <section class="controls">
+        <label class="search-box"><span>⌕</span><input id="subjectSearch" type="search" placeholder="Search subject books..." autocomplete="off"></label>
       </section>
 
       <section class="subjects-section">
         <div class="section-heading">
-          <div>
-            <span class="eyebrow">GRADE 1 SUBJECTS</span>
-            <h2>Choose a subject</h2>
-          </div>
-          <span id="subjectCount" class="subject-count">9 subjects · 225 lessons</span>
+          <div><span class="eyebrow">SUBJECT BOOKS</span><h2 id="booksHeading">Choose a book</h2></div>
+          <span id="subjectCount" class="subject-count"></span>
         </div>
         <div id="subjectGrid" class="subject-grid"></div>
       </section>
     </section>
+  </section>
 
-    <section id="dashboardView" class="view">
-      <section class="dashboard-header">
-        <span class="eyebrow">YOUR DASHBOARD</span>
-        <h1>Keep learning.</h1>
-        <p>Your progress is saved on this device.</p>
-      </section>
-
-      <section class="stats-grid">
-        <article><span>Subjects started</span><strong id="startedCount">0</strong></article>
-        <article><span>Lessons completed</span><strong id="completedCount">0</strong></article>
-        <article><span>Current streak</span><strong id="streakCount">0 days</strong></article>
-      </section>
-
-      <section class="continue-section">
-        <div class="section-heading">
-          <div>
-            <span class="eyebrow">CONTINUE</span>
-            <h2>Your learning</h2>
-          </div>
-        </div>
-        <div id="continueGrid" class="continue-grid"></div>
-      </section>
+  <section id="dashboardView" class="view">
+    <section class="dashboard-header">
+      <span class="eyebrow">YOUR DASHBOARD</span>
+      <h1>Keep learning.</h1>
+      <p>Your progress across all grades is saved on this device.</p>
     </section>
-  </main>
-
-  <section id="subjectModal" class="modal" hidden aria-modal="true" role="dialog" aria-labelledby="modalTitle">
-    <div class="modal-backdrop" data-close-modal></div>
-    <div class="modal-card">
-      <button class="modal-close" data-close-modal type="button" aria-label="Close">×</button>
-      <div class="modal-icon" id="modalIcon"></div>
-      <span class="eyebrow" id="modalAge"></span>
-      <h2 id="modalTitle"></h2>
-      <p id="modalDescription"></p>
-      <div id="subjectSummary" class="subject-summary"></div>
-      <div id="lessonList" class="unit-list"></div>
-    </div>
+    <section class="stats-grid">
+      <article><span>Books started</span><strong id="startedCount">0</strong></article>
+      <article><span>Lessons completed</span><strong id="completedCount">0</strong></article>
+      <article><span>Current streak</span><strong id="streakCount">0 days</strong></article>
+    </section>
+    <section class="continue-section">
+      <div class="section-heading"><div><span class="eyebrow">CONTINUE</span><h2>Your learning</h2></div></div>
+      <div id="continueGrid" class="continue-grid"></div>
+    </section>
   </section>
+</main>
 
-  <section id="lessonPlayer" class="lesson-player" hidden aria-label="Lesson player">
-    <div class="lesson-shell">
-      <header class="lesson-player-head">
-        <button id="closeLessonBtn" class="lesson-exit" type="button">← Back to subject</button>
-        <div class="lesson-player-title">
-          <small id="lessonBreadcrumb">Grade 1</small>
-          <strong id="lessonPlayerTitle">Lesson</strong>
-        </div>
-        <span id="lessonPageCounter" class="lesson-page-counter">Page 1 of 10</span>
-      </header>
-      <div id="lessonProgressDots" class="lesson-page-dots" aria-label="Lesson pages"></div>
-      <main id="lessonPageContent" class="lesson-page-content"></main>
-      <footer class="lesson-player-nav">
-        <button id="lessonBackBtn" class="secondary-btn" type="button">← Previous</button>
-        <span id="lessonAnswerStatus" class="lesson-answer-status"></span>
-        <button id="lessonNextBtn" class="primary-btn" type="button">Next →</button>
-      </footer>
-    </div>
-  </section>
+<section id="subjectModal" class="modal" hidden>
+  <div class="modal-backdrop" data-close-modal></div>
+  <div class="modal-card">
+    <button class="modal-close" data-close-modal type="button">×</button>
+    <div class="modal-icon" id="modalIcon"></div>
+    <span class="eyebrow" id="modalAge"></span>
+    <h2 id="modalTitle"></h2>
+    <p id="modalDescription"></p>
+    <div id="subjectSummary" class="subject-summary"></div>
+    <div id="lessonList" class="unit-list"></div>
+  </div>
+</section>
 
-  <section id="notebook" class="notebook" hidden aria-label="Vertex Learning notebook">
-    <header class="notebook-head">
-      <button id="closeNotebookBtn" class="secondary-btn" type="button">← Back</button>
-      <div>
-        <small>VERTEX LEARNING</small>
-        <strong>Notebook · 10,000 pages</strong>
-      </div>
-      <div class="notebook-jump">
-        <label for="notebookPageInput">Go to page</label>
-        <input id="notebookPageInput" type="number" min="1" max="10000" value="1">
-        <button id="notebookGoBtn" type="button">Go</button>
-      </div>
+<section id="lessonPlayer" class="lesson-player" hidden>
+  <div class="lesson-shell">
+    <header class="lesson-player-head">
+      <button id="closeLessonBtn" class="lesson-exit" type="button">← Back to book</button>
+      <div class="lesson-player-title"><small id="lessonBreadcrumb"></small><strong id="lessonPlayerTitle">Lesson</strong></div>
+      <span id="lessonPageCounter" class="lesson-page-counter">Page 1 of 10</span>
     </header>
-    <div class="notebook-status">
-      <span id="notebookCurrentPage">Page 1 of 10,000</span>
-      <span>Scroll down for the next pages · notes save automatically</span>
-    </div>
-    <div id="notebookScroller" class="notebook-scroller">
-      <div id="notebookVirtualSpace" class="notebook-virtual-space"></div>
-    </div>
-  </section>
+    <div id="lessonProgressDots" class="lesson-page-dots"></div>
+    <main id="lessonPageContent" class="lesson-page-content"></main>
+    <footer class="lesson-player-nav">
+      <button id="lessonBackBtn" class="secondary-btn" type="button">← Previous</button>
+      <span id="lessonAnswerStatus" class="lesson-answer-status"></span>
+      <button id="lessonNextBtn" class="primary-btn" type="button">Next →</button>
+    </footer>
+  </div>
+</section>
 
-  <footer>
-    <span>Vertex Learning</span>
-    <small>Vertex Systems AI © 2026</small>
-  </footer>
+<section id="notebook" class="notebook" hidden>
+  <header class="notebook-head">
+    <button id="closeNotebookBtn" class="secondary-btn" type="button">← Back</button>
+    <div><small>VERTEX LEARNING</small><strong>Notebook · 10,000 pages</strong></div>
+    <div class="notebook-jump">
+      <label>Go to page</label>
+      <input id="notebookPageInput" type="number" min="1" max="10000" value="1">
+      <button id="notebookGoBtn" type="button">Go</button>
+    </div>
+  </header>
+  <div class="notebook-status">
+    <span id="notebookCurrentPage">Page 1 of 10,000</span>
+    <span>Scroll down for notebook pages · notes save automatically</span>
+  </div>
+  <div id="notebookScroller" class="notebook-scroller"><div id="notebookVirtualSpace" class="notebook-virtual-space"></div></div>
+</section>
+
+<footer><span>Vertex Learning</span><small>Vertex Systems AI © 2026</small></footer>
 </body>
 </html>
