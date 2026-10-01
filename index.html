@@ -1,23 +1,23 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#0b1020">
-<title>Vertex Learning</title>
-<link rel="stylesheet" href="style.css?v=allgrades3">
-<script src="app.js?v=allgrades3" defer></script>
+<title>Vertex Learning | فيرتكس للتعلّم</title>
+<link rel="stylesheet" href="style.css?v=arabic1">
+<script src="app.js?v=arabic1" defer></script>
 </head>
 <body>
 <header class="topbar">
   <button id="homeBtn" class="brand brand-button" type="button">
     <span class="brand-mark">V</span>
-    <span><strong>Vertex Learning</strong><small>Grade 1 → College</small></span>
+    <span><strong>Vertex Learning</strong><small>الصف الأول ← الجامعة</small></span>
   </button>
   <nav class="topnav">
-    <button class="nav-link active" data-view="learn" type="button">Learn</button>
-    <button class="nav-link" data-view="dashboard" type="button">Dashboard</button>
-    <button id="notebookBtn" class="nav-link" type="button">📓 Notebook</button>
+    <button class="nav-link active" data-view="learn" type="button">التعلّم</button>
+    <button class="nav-link" data-view="dashboard" type="button">لوحة التقدم</button>
+    <button id="notebookBtn" class="nav-link" type="button">📓 الدفتر</button>
   </nav>
 </header>
 
@@ -27,46 +27,46 @@
       <section class="hero grade-hero">
         <div class="hero-copy">
           <span class="eyebrow">VERTEX LEARNING</span>
-          <h1>Choose your<br><span>grade.</span></h1>
-          <p>Grade 1 through Grade 12, plus College. Pick a level, then choose a subject book.</p>
+          <h1>اختر<br><span>صفك الدراسي.</span></h1>
+          <p>من الصف الأول حتى الصف الثاني عشر، بالإضافة إلى الجامعة. اختر المرحلة ثم اختر كتاب المادة.</p>
         </div>
         <div class="hero-card">
-          <div class="hero-card-top"><span>LEARNING PATH</span><span class="pill">13 levels</span></div>
+          <div class="hero-card-top"><span>مسار التعلّم</span><span class="pill">13 مستوى</span></div>
           <div class="code-icon">V</div>
-          <h2>Grade → Book → Unit → Lesson</h2>
-          <p>Each book has 5 units, each unit has 5 lessons, and every lesson has 10 pages.</p>
-          <div class="progress-row"><span>Notebook</span><strong>10,000 pages</strong></div>
+          <h2>الصف ← الكتاب ← الوحدة ← الدرس</h2>
+          <p>كل كتاب يحتوي على 5 وحدات، وكل وحدة فيها 5 دروس، وكل درس يتكوّن من 10 صفحات.</p>
+          <div class="progress-row"><span>الدفتر</span><strong>10,000 صفحة</strong></div>
           <div class="progress"><i style="width:100%"></i></div>
         </div>
       </section>
 
       <section class="levels-section">
         <div class="section-heading">
-          <div><span class="eyebrow">LEVELS</span><h2>Choose a grade</h2></div>
-          <span class="subject-count">Grade 1 → College</span>
+          <div><span class="eyebrow">المراحل</span><h2>اختر الصف</h2></div>
+          <span class="subject-count">الصف الأول ← الجامعة</span>
         </div>
         <div id="gradeGrid" class="grade-grid"></div>
       </section>
     </section>
 
     <section id="booksView" hidden>
-      <button id="backToGradesBtn" class="secondary-btn back-levels" type="button">← All grades</button>
+      <button id="backToGradesBtn" class="secondary-btn back-levels" type="button">جميع الصفوف →</button>
       <section class="grade-banner">
         <div>
-          <span class="eyebrow">CURRENT LEVEL</span>
-          <h2 id="currentGradeTitle">Grade 1</h2>
+          <span class="eyebrow">المستوى الحالي</span>
+          <h2 id="currentGradeTitle">الصف الأول</h2>
           <p id="currentGradeSummary"></p>
         </div>
         <span id="currentGradeBadge" class="grade-badge">1</span>
       </section>
 
       <section class="controls">
-        <label class="search-box"><span>⌕</span><input id="subjectSearch" type="search" placeholder="Search subject books..." autocomplete="off"></label>
+        <label class="search-box"><span>⌕</span><input id="subjectSearch" type="search" placeholder="ابحث عن مادة..." autocomplete="off"></label>
       </section>
 
       <section class="subjects-section">
         <div class="section-heading">
-          <div><span class="eyebrow">SUBJECT BOOKS</span><h2 id="booksHeading">Choose a book</h2></div>
+          <div><span class="eyebrow">كتب المواد</span><h2 id="booksHeading">اختر كتابًا</h2></div>
           <span id="subjectCount" class="subject-count"></span>
         </div>
         <div id="subjectGrid" class="subject-grid"></div>
@@ -76,17 +76,17 @@
 
   <section id="dashboardView" class="view">
     <section class="dashboard-header">
-      <span class="eyebrow">YOUR DASHBOARD</span>
-      <h1>Keep learning.</h1>
-      <p>Your progress across all grades is saved on this device.</p>
+      <span class="eyebrow">لوحة التقدم</span>
+      <h1>واصل التعلّم.</h1>
+      <p>يُحفظ تقدمك في جميع الصفوف على هذا الجهاز.</p>
     </section>
     <section class="stats-grid">
-      <article><span>Books started</span><strong id="startedCount">0</strong></article>
-      <article><span>Lessons completed</span><strong id="completedCount">0</strong></article>
-      <article><span>Current streak</span><strong id="streakCount">0 days</strong></article>
+      <article><span>الكتب التي بدأت بها</span><strong id="startedCount">0</strong></article>
+      <article><span>الدروس المكتملة</span><strong id="completedCount">0</strong></article>
+      <article><span>أيام الاستمرار</span><strong id="streakCount">0 يوم</strong></article>
     </section>
     <section class="continue-section">
-      <div class="section-heading"><div><span class="eyebrow">CONTINUE</span><h2>Your learning</h2></div></div>
+      <div class="section-heading"><div><span class="eyebrow">متابعة</span><h2>تعلّمك</h2></div></div>
       <div id="continueGrid" class="continue-grid"></div>
     </section>
   </section>
@@ -108,33 +108,33 @@
 <section id="lessonPlayer" class="lesson-player" hidden>
   <div class="lesson-shell">
     <header class="lesson-player-head">
-      <button id="closeLessonBtn" class="lesson-exit" type="button">← Back to book</button>
-      <div class="lesson-player-title"><small id="lessonBreadcrumb"></small><strong id="lessonPlayerTitle">Lesson</strong></div>
-      <span id="lessonPageCounter" class="lesson-page-counter">Page 1 of 10</span>
+      <button id="closeLessonBtn" class="lesson-exit" type="button">العودة للكتاب →</button>
+      <div class="lesson-player-title"><small id="lessonBreadcrumb"></small><strong id="lessonPlayerTitle">الدرس</strong></div>
+      <span id="lessonPageCounter" class="lesson-page-counter">الصفحة 1 من 10</span>
     </header>
     <div id="lessonProgressDots" class="lesson-page-dots"></div>
     <main id="lessonPageContent" class="lesson-page-content"></main>
     <footer class="lesson-player-nav">
-      <button id="lessonBackBtn" class="secondary-btn" type="button">← Previous</button>
+      <button id="lessonBackBtn" class="secondary-btn" type="button">السابق →</button>
       <span id="lessonAnswerStatus" class="lesson-answer-status"></span>
-      <button id="lessonNextBtn" class="primary-btn" type="button">Next →</button>
+      <button id="lessonNextBtn" class="primary-btn" type="button">← التالي</button>
     </footer>
   </div>
 </section>
 
 <section id="notebook" class="notebook" hidden>
   <header class="notebook-head">
-    <button id="closeNotebookBtn" class="secondary-btn" type="button">← Back</button>
-    <div><small>VERTEX LEARNING</small><strong>Notebook · 10,000 pages</strong></div>
+    <button id="closeNotebookBtn" class="secondary-btn" type="button">العودة →</button>
+    <div><small>VERTEX LEARNING</small><strong>الدفتر · 10,000 صفحة</strong></div>
     <div class="notebook-jump">
-      <label>Go to page</label>
+      <label>انتقل إلى الصفحة</label>
       <input id="notebookPageInput" type="number" min="1" max="10000" value="1">
-      <button id="notebookGoBtn" type="button">Go</button>
+      <button id="notebookGoBtn" type="button">انتقل</button>
     </div>
   </header>
   <div class="notebook-status">
-    <span id="notebookCurrentPage">Page 1 of 10,000</span>
-    <span>Scroll down for notebook pages · notes save automatically</span>
+    <span id="notebookCurrentPage">الصفحة 1 من 10,000</span>
+    <span>مرّر لأسفل بين صفحات الدفتر · تُحفظ الملاحظات تلقائيًا</span>
   </div>
   <div id="notebookScroller" class="notebook-scroller"><div id="notebookVirtualSpace" class="notebook-virtual-space"></div></div>
 </section>
