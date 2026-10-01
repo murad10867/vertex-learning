@@ -98,25 +98,25 @@ chemistry:{high:['المادة والذرات','الاتجاهات الدوري�
 
 function unitsFor(id,g){
   const map=UNITS[id]||{};
-  return map[stage(g)]||map.high||map.elementary||map.lower||['Foundations','Core Skills','Applications','Projects','Review'];
+  return map[stage(g)]||map.high||map.elementary||map.lower||['الأساسيات','المهارات الأساسية','التطبيقات','المشروعات','المراجعة'];
 }
 function lessonsFor(unit,g){
   const s=stage(g);
   const p=s==='lower'
-    ?['Meet ','Practice ','Use ','Try ','Review ']
+    ?['تعرّف على ','تدرّب على ','استخدم ','جرّب ','مراجعة ']
     :s==='elementary'
-      ?['Introduction to ','Core Skills: ','Practice: ','Apply: ','Review: ']
+      ?['مقدمة في ','المهارات الأساسية: ','تدريب: ','تطبيق: ','مراجعة: ']
       :s==='middle'
-        ?['Foundations of ','Key Ideas: ','Skills & Practice: ','Applications: ','Challenge & Review: ']
+        ?['أساسيات ','الأفكار الرئيسة: ','المهارات والتدريب: ','التطبيقات: ','التحدي والمراجعة: ']
         :s==='high'
-          ?['Concepts of ','Methods in ','Problem Solving: ','Applications & Analysis: ','Assessment Review: ']
-          :['Principles of ','Advanced Concepts: ','Methods & Analysis: ','Applications & Case Study: ','Synthesis & Review: '];
+          ?['مفاهيم ','طرائق ','حل المشكلات: ','التطبيق والتحليل: ','مراجعة التقويم: ']
+          :['مبادئ ','مفاهيم متقدمة: ','الطرائق والتحليل: ','التطبيق ودراسة الحالة: ','التركيب والمراجعة: '];
   return p.map(x=>x+unit);
 }
 function curriculum(g){
   return subjectIdsForGrade(g).map(id=>{
     const [name,icon,description]=META[id];
-    return {id,name,icon,description:(g===13?'College':('Grade '+g))+' '+description,units:unitsFor(id,g).map(u=>({title:u,lessons:lessonsFor(u,g)}))};
+    return {id,name,icon,description:levelName(g)+' · '+description,units:unitsFor(id,g).map(u=>({title:u,lessons:lessonsFor(u,g)}))};
   });
 }
 function levelName(g){return g===13?'الجامعة':'الصف '+g;}
@@ -237,28 +237,28 @@ function makeQ(x,seed){
 function pageQuestions(x,page){const base=x.grade*1000+lessonSession.ui*200+lessonSession.li*50+(page-4)*10;return Array.from({length:10},(_,i)=>makeQ(x,base+i));}
 function addNext(label,disabled=false){const w=document.createElement('div');w.className='page-next-wrap';const b=document.createElement('button');b.id='pageNextBtn';b.className='primary-btn page-next-btn';b.type='button';b.textContent=label;b.disabled=disabled;b.onclick=next;w.appendChild(b);lessonPageContent.appendChild(w);}
 function renderLessonPage(){
-  const x=info(),p=lessonSession.page;lessonBreadcrumb.textContent=levelName(x.grade)+' · '+x.book.name+' · '+x.unit.title;lessonPlayerTitle.textContent=x.title;lessonPageCounter.textContent='Page '+(p+1)+' of 10';
+  const x=info(),p=lessonSession.page;lessonBreadcrumb.textContent=levelName(x.grade)+' · '+x.book.name+' · '+x.unit.title;lessonPlayerTitle.textContent=x.title;lessonPageCounter.textContent='الصفحة '+(p+1)+' من 10';
   lessonProgressDots.innerHTML='';for(let i=0;i<10;i++){const d=document.createElement('i');if(i<p)d.className='done';if(i===p)d.className='active';lessonProgressDots.appendChild(d);}
   lessonBackBtn.disabled=p===0;lessonAnswerStatus.textContent='';
-  if(p<=2){const e=explain(x,p);lessonPageContent.innerHTML='<span class="lesson-type">EXPLANATION '+(p+1)+' OF 3</span><h1>'+e.title+'</h1><p class="page-lead">'+e.lead+'</p><div class="explanation-grid">'+e.cards.map(c=>'<article class="explain-card"><span>LEARN</span><h3>'+c[0]+'</h3><p>'+c[1]+'</p></article>').join('')+'</div>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='Next →';addNext('Next page →');return;}
-  if(p===3){const e=example(x);lessonPageContent.innerHTML='<span class="lesson-type">WORKED EXAMPLE</span><h1>'+x.title+'</h1><p class="page-lead">Study one example before the questions.</p><article class="worked-example"><small>EXAMPLE</small><h3>'+e[0]+'</h3><div class="example-steps">'+e.slice(1).map((s,i)=>'<div><strong>Step '+(i+1)+':</strong> '+s+'</div>').join('')+'</div></article>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='Start questions →';addNext('Start questions →');return;}
+  if(p<=2){const e=explain(x,p);lessonPageContent.innerHTML='<span class="lesson-type">EXPLANATION '+(p+1)+' OF 3</span><h1>'+e.title+'</h1><p class="page-lead">'+e.lead+'</p><div class="explanation-grid">'+e.cards.map(c=>'<article class="explain-card"><span>LEARN</span><h3>'+c[0]+'</h3><p>'+c[1]+'</p></article>').join('')+'</div>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='← التالي';addNext('← الصفحة التالية');return;}
+  if(p===3){const e=example(x);lessonPageContent.innerHTML='<span class="lesson-type">WORKED EXAMPLE</span><h1>'+x.title+'</h1><p class="page-lead">Study one example before the questions.</p><article class="worked-example"><small>EXAMPLE</small><h3>'+e[0]+'</h3><div class="example-steps">'+e.slice(1).map((s,i)=>'<div><strong>Step '+(i+1)+':</strong> '+s+'</div>').join('')+'</div></article>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='← ابدأ الأسئلة';addNext('← ابدأ الأسئلة');return;}
   renderQPage(x,p);
 }
 function renderQPage(x,p){
   pageAnswers={};const qs=pageQuestions(x,p);lessonPageContent.innerHTML='<div class="question-page-head"><div><span class="lesson-type">QUESTIONS · PAGE '+(p-3)+' OF 6</span><h1>'+x.title+'</h1></div><span id="questionScore" class="question-score">0 / 10 answered</span></div><p class="page-lead">Answer all 10 questions to continue.</p><div id="questionList" class="question-list"></div>';
   const list=document.getElementById('questionList');qs.forEach((z,i)=>{const card=document.createElement('article');card.className='question-card';card.innerHTML='<div class="question-title"><span class="question-number">'+(i+1)+'</span><strong>'+z.prompt+'</strong></div><div class="answer-options"></div><div class="question-feedback"></div>';const opts=card.querySelector('.answer-options'),fb=card.querySelector('.question-feedback');
-    z.options.forEach(o=>{const b=document.createElement('button');b.type='button';b.textContent=o;b.onclick=()=>{if(pageAnswers[i])return;const ok=o===z.correct;pageAnswers[i]={correct:ok};card.classList.add(ok?'correct':'wrong');fb.textContent=ok?'Correct!':'Correct answer: '+z.correct;[...opts.children].forEach(x=>{x.disabled=true;if(x.textContent===z.correct)x.classList.add('correct-answer');else if(x===b&&!ok)x.classList.add('wrong-answer');});gate();};opts.appendChild(b);});list.appendChild(card);});
-  lessonNextBtn.disabled=true;lessonNextBtn.textContent=p===9?'Finish lesson ✓':'Next page →';addNext(p===9?'Finish lesson ✓':'Next page →',true);gate();
+    z.options.forEach(o=>{const b=document.createElement('button');b.type='button';b.textContent=o;b.onclick=()=>{if(pageAnswers[i])return;const ok=o===z.correct;pageAnswers[i]={correct:ok};card.classList.add(ok?'correct':'wrong');fb.textContent=ok?'إجابة صحيحة!':'الإجابة الصحيحة: '+z.correct;[...opts.children].forEach(x=>{x.disabled=true;if(x.textContent===z.correct)x.classList.add('correct-answer');else if(x===b&&!ok)x.classList.add('wrong-answer');});gate();};opts.appendChild(b);});list.appendChild(card);});
+  lessonNextBtn.disabled=true;lessonNextBtn.textContent=p===9?'إنهاء الدرس ✓':'← الصفحة التالية';addNext(p===9?'إنهاء الدرس ✓':'← الصفحة التالية',true);gate();
 }
-function gate(){const a=Object.keys(pageAnswers).length,c=Object.values(pageAnswers).filter(x=>x.correct).length,s=document.getElementById('questionScore');if(s)s.textContent=a+' / 10 answered · '+c+' correct';lessonAnswerStatus.textContent=a<10?'Answer '+(10-a)+' more':c+'/10 correct';lessonNextBtn.disabled=a<10;const b=document.getElementById('pageNextBtn');if(b)b.disabled=a<10;}
+function gate(){const a=Object.keys(pageAnswers).length,c=Object.values(pageAnswers).filter(x=>x.correct).length,s=document.getElementById('questionScore');if(s)s.textContent=a+' / 10 مجاب · '+c+' صحيح';lessonAnswerStatus.textContent=a<10?'أجب عن '+(10-a)+' أسئلة إضافية':c+'/10 صحيح';lessonNextBtn.disabled=a<10;const b=document.getElementById('pageNextBtn');if(b)b.disabled=a<10;}
 function next(){if(!lessonSession)return;if(lessonSession.page===9){finish();return;}setPage(lessonSession.page+1);}
 function finish(){const x=info();progress[pKey(x.grade,x.book.id,lessonSession.ui,lessonSession.li)]=true;lessonState[pKey(x.grade,x.book.id,lessonSession.ui,lessonSession.li)]={page:9,completed:true};save();markActivity();lessonPlayer.hidden=true;document.body.style.overflow='';const id=x.book.id;activeGrade=x.grade;activeSubjects=curriculum(x.grade);lessonSession=null;renderBooks();renderDashboard();openBook(id);}
 function leave(){const x=info();lessonPlayer.hidden=true;document.body.style.overflow='';lessonSession=null;activeGrade=x.grade;activeSubjects=curriculum(x.grade);openBook(x.book.id);}
 function streak(){let a=[];try{a=JSON.parse(localStorage.getItem(ACTIVITY_KEY)||'[]')}catch(_){};return a.length?1:0;}
 function renderDashboard(){
-  const keys=Object.keys(progress).filter(k=>progress[k]);completedCount.textContent=keys.length;const books=new Set(keys.map(k=>k.split(':').slice(0,2).join(':')));startedCount.textContent=books.size;streakCount.textContent=streak()+' day'+(streak()===1?'':'s');continueGrid.innerHTML='';
-  if(!books.size){continueGrid.innerHTML='<div class="empty-state">Start a lesson and it will appear here.</div>';return;}
-  [...books].slice(0,12).forEach(k=>{const [g,id]=k.split(':'),grade=Number(g),book=curriculum(grade).find(x=>x.id===id);if(!book)return;let d=0;book.units.forEach((u,ui)=>u.lessons.forEach((_,li)=>{if(complete(grade,id,ui,li))d++;}));const c=document.createElement('article');c.className='continue-card';c.innerHTML='<h3>'+book.icon+' '+levelName(grade)+' · '+book.name+'</h3><p>'+d+' of 25 lessons completed</p><div class="progress"><i style="width:'+Math.round(d/25*100)+'%"></i></div>';c.onclick=()=>{showView('learn');selectGrade(grade);openBook(id);};continueGrid.appendChild(c);});
+  const keys=Object.keys(progress).filter(k=>progress[k]);completedCount.textContent=keys.length;const books=new Set(keys.map(k=>k.split(':').slice(0,2).join(':')));startedCount.textContent=books.size;streakCount.textContent=streak()+' يوم';continueGrid.innerHTML='';
+  if(!books.size){continueGrid.innerHTML='<div class="empty-state">ابدأ درسًا وسيظهر هنا.</div>';return;}
+  [...books].slice(0,12).forEach(k=>{const [g,id]=k.split(':'),grade=Number(g),book=curriculum(grade).find(x=>x.id===id);if(!book)return;let d=0;book.units.forEach((u,ui)=>u.lessons.forEach((_,li)=>{if(complete(grade,id,ui,li))d++;}));const c=document.createElement('article');c.className='continue-card';c.innerHTML='<h3>'+book.icon+' '+levelName(grade)+' · '+book.name+'</h3><p>'+d+' من 25 درسًا مكتمل</p><div class="progress"><i style="width:'+Math.round(d/25*100)+'%"></i></div>';c.onclick=()=>{showView('learn');selectGrade(grade);openBook(id);};continueGrid.appendChild(c);});
 }
 function showView(name){const d=name==='dashboard';learnView.classList.toggle('active',!d);dashboardView.classList.toggle('active',d);navLinks.forEach(x=>x.classList.toggle('active',x.dataset.view===name));if(d)renderDashboard();window.scrollTo({top:0,behavior:'smooth'});}
 
@@ -270,8 +270,8 @@ const NOTEBOOK_TOTAL_PAGES=10000,NOTEBOOK_PAGE_HEIGHT=940,NOTEBOOK_PAGE_KEY='ver
 const notebookBtn=document.getElementById('notebookBtn'),notebook=document.getElementById('notebook'),closeNotebookBtn=document.getElementById('closeNotebookBtn'),notebookScroller=document.getElementById('notebookScroller'),notebookVirtualSpace=document.getElementById('notebookVirtualSpace'),notebookCurrentPage=document.getElementById('notebookCurrentPage'),notebookPageInput=document.getElementById('notebookPageInput'),notebookGoBtn=document.getElementById('notebookGoBtn');
 let notebookOpen=false,timers={};
 function pageKey(p){return NOTEBOOK_PAGE_KEY+p;}function getText(p){return localStorage.getItem(pageKey(p))||'';}function saveText(p,v){localStorage.setItem(pageKey(p),v);}
-function makePage(p){const w=document.createElement('section');w.className='notebook-page';w.dataset.page=p;w.style.top=((p-1)*NOTEBOOK_PAGE_HEIGHT+20)+'px';const n=document.createElement('div');n.className='notebook-page-number';n.textContent='Page '+p;const t=document.createElement('textarea');t.className='notebook-page-text';t.placeholder='Write your notes here...';t.value=getText(p);t.oninput=()=>{clearTimeout(timers[p]);timers[p]=setTimeout(()=>saveText(p,t.value),180);};t.onblur=()=>saveText(p,t.value);w.append(n,t);return w;}
-function renderNotebook(){if(!notebookOpen)return;const top=notebookScroller.scrollTop,h=notebookScroller.clientHeight||innerHeight,first=Math.max(1,Math.floor(top/NOTEBOOK_PAGE_HEIGHT)-2),last=Math.min(NOTEBOOK_TOTAL_PAGES,Math.ceil((top+h)/NOTEBOOK_PAGE_HEIGHT)+2),keep=new Set();for(let p=first;p<=last;p++){keep.add(String(p));if(!notebookVirtualSpace.querySelector('[data-page="'+p+'"]'))notebookVirtualSpace.appendChild(makePage(p));}[...notebookVirtualSpace.querySelectorAll('.notebook-page')].forEach(el=>{if(!keep.has(el.dataset.page)){const t=el.querySelector('textarea');saveText(Number(el.dataset.page),t.value);el.remove();}});const cur=Math.min(NOTEBOOK_TOTAL_PAGES,Math.max(1,Math.floor((top+NOTEBOOK_PAGE_HEIGHT*.42)/NOTEBOOK_PAGE_HEIGHT)+1));notebookCurrentPage.textContent='Page '+cur.toLocaleString()+' of 10,000';notebookPageInput.value=cur;}
+function makePage(p){const w=document.createElement('section');w.className='notebook-page';w.dataset.page=p;w.style.top=((p-1)*NOTEBOOK_PAGE_HEIGHT+20)+'px';const n=document.createElement('div');n.className='notebook-page-number';n.textContent='الصفحة '+p;const t=document.createElement('textarea');t.className='notebook-page-text';t.placeholder='اكتب ملاحظاتك هنا...';t.value=getText(p);t.oninput=()=>{clearTimeout(timers[p]);timers[p]=setTimeout(()=>saveText(p,t.value),180);};t.onblur=()=>saveText(p,t.value);w.append(n,t);return w;}
+function renderNotebook(){if(!notebookOpen)return;const top=notebookScroller.scrollTop,h=notebookScroller.clientHeight||innerHeight,first=Math.max(1,Math.floor(top/NOTEBOOK_PAGE_HEIGHT)-2),last=Math.min(NOTEBOOK_TOTAL_PAGES,Math.ceil((top+h)/NOTEBOOK_PAGE_HEIGHT)+2),keep=new Set();for(let p=first;p<=last;p++){keep.add(String(p));if(!notebookVirtualSpace.querySelector('[data-page="'+p+'"]'))notebookVirtualSpace.appendChild(makePage(p));}[...notebookVirtualSpace.querySelectorAll('.notebook-page')].forEach(el=>{if(!keep.has(el.dataset.page)){const t=el.querySelector('textarea');saveText(Number(el.dataset.page),t.value);el.remove();}});const cur=Math.min(NOTEBOOK_TOTAL_PAGES,Math.max(1,Math.floor((top+NOTEBOOK_PAGE_HEIGHT*.42)/NOTEBOOK_PAGE_HEIGHT)+1));notebookCurrentPage.textContent='الصفحة '+cur.toLocaleString()+' من 10,000';notebookPageInput.value=cur;}
 function openNotebook(){notebookOpen=true;notebook.hidden=false;document.body.style.overflow='hidden';notebookVirtualSpace.style.height=(NOTEBOOK_TOTAL_PAGES*NOTEBOOK_PAGE_HEIGHT+40)+'px';renderNotebook();}
 function closeNotebook(){notebookOpen=false;notebook.hidden=true;document.body.style.overflow='';}
 function jumpNotebook(){const p=Math.max(1,Math.min(10000,Math.round(Number(notebookPageInput.value)||1)));notebookScroller.scrollTop=(p-1)*NOTEBOOK_PAGE_HEIGHT;renderNotebook();}
