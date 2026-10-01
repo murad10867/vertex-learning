@@ -201,15 +201,15 @@ function setPage(p){lessonSession.page=Math.max(0,Math.min(9,p));lessonState[pKe
 function tone(g){return g<=2?'simple':g<=5?'elementary':g<=8?'middle':g<=12?'high':'college';}
 function explain(x,page){
   const lvl=tone(x.grade),topic=x.title;
-  if(page===0)return {title:topic,lead:lvl==='simple'?'Learn this idea in small steps.':lvl==='college'?'Study the principle, context, and purpose of this topic.':'Learn the key concept and connect it to what you already know.',cards:[['What it is','This lesson focuses on '+topic+'.'],['Why it matters','It builds an important skill in '+x.book.name+'.'],['Goal','Understand the idea and use it correctly.']]};
-  if(page===1)return {title:'Key ideas: '+topic,lead:'Focus on the most important ideas.',cards:[['Idea 1','Identify the main rule, fact, or process.'],['Idea 2','Work through it one step at a time.'],['Idea 3','Use the idea in a new situation.']]};
-  return {title:'Remember and try',lead:'Get ready for the worked example.',cards:[['Remember','Say one important fact about '+topic+'.'],['Try','Create a small example of '+topic+'.'],['Check','Explain how it connects to '+x.unit.title+'.']]};
+  if(page===0)return {title:topic,lead:lvl==='simple'?'تعلّم الفكرة بخطوات صغيرة.':lvl==='college'?'ادرس المبدأ والسياق والهدف من هذا الموضوع.':'تعلّم المفهوم الرئيس واربطه بما تعرفه مسبقًا.',cards:[['ما هو؟','يركز هذا الدرس على '+topic+'.'],['لماذا هو مهم؟','يبني مهارة مهمة في مادة '+x.book.name+'.'],['الهدف','افهم الفكرة واستخدمها بطريقة صحيحة.']]};
+  if(page===1)return {title:'الأفكار الرئيسة: '+topic,lead:'ركّز على أهم الأفكار.',cards:[['الفكرة 1','حدّد القاعدة أو الحقيقة أو العملية الرئيسة.'],['الفكرة 2','اعمل خطوة بخطوة.'],['الفكرة 3','استخدم الفكرة في موقف جديد.']]};
+  return {title:'تذكّر وجرّب',lead:'استعد للمثال المحلول.',cards:[['تذكّر','اذكر حقيقة مهمة عن '+topic+'.'],['جرّب','أنشئ مثالًا بسيطًا عن '+topic+'.'],['تحقق','اشرح كيف يرتبط بوحدة '+x.unit.title+'.']]};
 }
 function example(x){
   const s=x.book.id,g=x.grade;
-  if(s==='math'){if(g<=2)return ['Small-number example','Start with 4.','Add 3.','Count to 7.'];if(g<=5)return ['Number problem','Read carefully.','Choose an operation.','Solve and check.'];if(g<=8)return ['Equation example','Write what you know.','Choose a rule.','Solve and verify.'];return ['Advanced math example','Model the problem.','Apply a method.','Interpret the result.'];}
-  const map={science:['Observe','Collect evidence','Explain'],english:['Read','Identify the language skill','Apply it'],arabic:['Read','Identify the language feature','Use it'],islamic:['Learn the idea','Connect it to a value or rule','Apply it respectfully'],'computer-science':['Define the task','Follow the computing steps','Check the output'],art:['Study an example','Choose elements and tools','Create and reflect'],sports:['Review safe technique','Practice','Evaluate'],geography:['Study a map or place','Find the pattern','Explain the relationship'],history:['Identify time and place','Study evidence','Explain change or cause'],programming:['Read the problem','Build the logic','Test and debug'],physics:['List known values','Choose the principle','Solve with units'],chemistry:['Identify substances','Apply the rule or equation','Check the result']};
-  return ['Worked example: '+x.title,...(map[s]||['Understand','Apply','Check'])];
+  if(s==='math'){if(g<=2)return ['مثال بأعداد صغيرة','ابدأ بالعدد 4.','أضف 3.','عدّ حتى 7.'];if(g<=5)return ['مسألة عددية','اقرأ بعناية.','اختر العملية المناسبة.','حل ثم تحقق.'];if(g<=8)return ['مثال على معادلة','اكتب المعطيات.','اختر القاعدة.','حل وتحقق.'];return ['مثال رياضي متقدم','نمذج المسألة.','طبّق الطريقة.','فسّر النتيجة.'];}
+  const map={science:['لاحظ','اجمع الأدلة','فسّر'],english:['اقرأ','حدّد المهارة اللغوية','طبّقها'],arabic:['اقرأ','حدّد الظاهرة اللغوية','استخدمها'],islamic:['تعلّم الفكرة','اربطها بقيمة أو حكم','طبّقها باحترام'],'computer-science':['حدّد المهمة','اتبع خطوات الحوسبة','تحقق من الناتج'],art:['ادرس مثالًا','اختر العناصر والأدوات','أنشئ ثم قيّم'],sports:['راجع الطريقة الآمنة','تدرّب','قيّم'],geography:['ادرس خريطة أو مكانًا','اكتشف النمط','فسّر العلاقة'],history:['حدّد الزمان والمكان','ادرس الأدلة','فسّر التغير أو السبب'],programming:['اقرأ المشكلة','ابنِ المنطق','اختبر وأصلح الأخطاء'],physics:['اكتب القيم المعروفة','اختر المبدأ','حل مع الوحدات'],chemistry:['حدّد المواد','طبّق القاعدة أو المعادلة','تحقق من النتيجة']};
+  return ['مثال محلول: '+x.title,...(map[s]||['افهم','طبّق','تحقق'])];
 }
 function rot(c,a,b,seed){const x=[c,a,b],n=seed%3;return x.slice(n).concat(x.slice(0,n));}
 function q(prompt,c,a,b,seed){return {prompt,correct:c,options:rot(c,a,b,seed)};}
@@ -217,20 +217,20 @@ function makeQ(x,seed){
   if(x.book.id==='math'){
     if(x.grade<=2){const a=1+seed%9,b=1+(seed*3)%8,n=a+b;return q(a+' + '+b+' = ?',String(n),String(n+1),String(Math.max(0,n-1)),seed);}
     if(x.grade<=5){const a=20+seed%80,b=2+seed%18,n=a-b;return q(a+' − '+b+' = ?',String(n),String(n+1),String(n-1),seed);}
-    if(x.grade<=8){const n=2+seed%8,k=3+seed%9;return q('Solve x + '+k+' = '+(n+k),String(n),String(n+1),String(n-1),seed);}
-    const n=1+seed%5,m=2+seed%5,c=1+seed%4,y=m*n+c;return q('For y = '+m+'x + '+c+', find y when x = '+n,String(y),String(y+m),String(y-c),seed);
+    if(x.grade<=8){const n=2+seed%8,k=3+seed%9;return q('حل: س + '+k+' = '+(n+k),String(n),String(n+1),String(n-1),seed);}
+    const n=1+seed%5,m=2+seed%5,c=1+seed%4,y=m*n+c;return q('إذا كانت ص = '+m+'x + '+c+'، أوجد ص عندما س = '+n,String(y),String(y+m),String(y-c),seed);
   }
   const bank=[
-    ['Which topic are you studying?',x.title,x.unit.title,'A different topic'],
-    ['Which unit contains this lesson?',x.unit.title,x.title,'Notebook'],
-    ['Which book are you studying?',x.book.name,'Dashboard','A different book'],
-    ['What helps you learn this topic?','Practice and check','Guess only','Skip examples'],
-    ['What should you do after a mistake?','Review and try again','Stop','Choose randomly'],
-    ['What is the goal of the worked example?','Show how the idea is used','Hide the method','Change the subject'],
-    ['Which action supports learning?','Careful thinking','Random clicking','Skipping'],
-    ['What comes before question pages?','Explanation and example','Nothing','Dashboard'],
-    ['A good way to check understanding is to…','Explain it in your own words','Ignore it','Skip it'],
-    ['Which lesson are you in?',x.title,x.book.name,x.unit.title]
+    ['ما الموضوع الذي تدرسه؟',x.title,x.unit.title,'موضوع مختلف'],
+    ['في أي وحدة يوجد هذا الدرس؟',x.unit.title,x.title,'الدفتر'],
+    ['ما المادة التي تدرسها؟',x.book.name,'لوحة التقدم','مادة مختلفة'],
+    ['ما الذي يساعدك على تعلّم هذا الموضوع؟','التدرب والتحقق','التخمين فقط','تجاوز الأمثلة'],
+    ['ماذا تفعل بعد الخطأ؟','أراجع وأحاول مرة أخرى','أتوقف','أختار عشوائيًا'],
+    ['ما هدف المثال المحلول؟','إظهار كيفية استخدام الفكرة','إخفاء الطريقة','تغيير الموضوع'],
+    ['أي تصرف يدعم التعلّم؟','التفكير بعناية','النقر العشوائي','التجاوز'],
+    ['ماذا يأتي قبل صفحات الأسئلة؟','الشرح والمثال','لا شيء','لوحة التقدم'],
+    ['طريقة جيدة للتحقق من الفهم هي…','شرح الفكرة بكلماتك','تجاهلها','تجاوزها'],
+    ['ما الدرس الذي أنت فيه؟',x.title,x.book.name,x.unit.title]
   ];
   const z=bank[seed%bank.length];return q(z[0],z[1],z[2],z[3],seed);
 }
