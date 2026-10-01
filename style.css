@@ -783,3 +783,35 @@ footer{
 @media(max-width:900px){.grade-grid{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:680px){.grade-grid{grid-template-columns:repeat(2,1fr)}.college-card{grid-column:span 2}}
 @media(max-width:420px){.grade-grid{grid-template-columns:1fr}.college-card{grid-column:auto}}
+
+
+/* Arabic / RTL */
+html{direction:rtl}
+body{direction:rtl;text-align:right}
+.brand-button,.subject-card,.unit-head,.continue-card,.modal-card,.question-card,.explain-card,.worked-example{text-align:right}
+.subject-age{right:auto;left:16px}
+.modal-close{right:auto;left:14px}
+.lesson-player-title{text-align:center}
+.lesson-page-counter{text-align:left}
+.search-box input{text-align:right}
+.grade-card-arrow{transform:scaleX(-1)}
+.notebook-page-number{right:auto;left:16px}
+.notebook-page-text{
+  direction:rtl;
+  text-align:right;
+  inset:42px 76px 30px 34px;
+  width:calc(100% - 110px);
+}
+.notebook-page{
+  background:
+    linear-gradient(270deg, transparent 0 58px, rgba(224,85,85,.27) 58px 60px, transparent 60px),
+    repeating-linear-gradient(to bottom,#fffef8 0,#fffef8 34px,#d9e5f1 35px,#fffef8 36px);
+}
+@media(max-width:700px){
+  .lesson-player-title{text-align:left}
+  .lesson-page-counter{text-align:left}
+  .notebook-page-text{
+    inset:42px 54px 25px 18px;
+    width:calc(100% - 72px);
+  }
+}
