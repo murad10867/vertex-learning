@@ -215,10 +215,10 @@ function rot(c,a,b,seed){const x=[c,a,b],n=seed%3;return x.slice(n).concat(x.sli
 function q(prompt,c,a,b,seed){return {prompt,correct:c,options:rot(c,a,b,seed)};}
 function makeQ(x,seed){
   if(x.book.id==='math'){
-    if(x.grade<=2){const a=1+seed%9,b=1+(seed*3)%8,n=a+b;return q(a+' + '+b+' = ?',String(n),String(n+1),String(Math.max(0,n-1)),seed);}
-    if(x.grade<=5){const a=20+seed%80,b=2+seed%18,n=a-b;return q(a+' − '+b+' = ?',String(n),String(n+1),String(n-1),seed);}
+    if(x.grade<=2){const a=1+seed%9,b=1+(seed*3)%8,n=a+b;return q(a+' + '+b+' = ؟',String(n),String(n+1),String(Math.max(0,n-1)),seed);}
+    if(x.grade<=5){const a=20+seed%80,b=2+seed%18,n=a-b;return q(a+' − '+b+' = ؟',String(n),String(n+1),String(n-1),seed);}
     if(x.grade<=8){const n=2+seed%8,k=3+seed%9;return q('حل: س + '+k+' = '+(n+k),String(n),String(n+1),String(n-1),seed);}
-    const n=1+seed%5,m=2+seed%5,c=1+seed%4,y=m*n+c;return q('إذا كانت ص = '+m+'x + '+c+'، أوجد ص عندما س = '+n,String(y),String(y+m),String(y-c),seed);
+    const n=1+seed%5,m=2+seed%5,c=1+seed%4,y=m*n+c;return q('إذا كانت ص = '+m+'س + '+c+'، أوجد ص عندما س = '+n,String(y),String(y+m),String(y-c),seed);
   }
   const bank=[
     ['ما الموضوع الذي تدرسه؟',x.title,x.unit.title,'موضوع مختلف'],
@@ -240,12 +240,12 @@ function renderLessonPage(){
   const x=info(),p=lessonSession.page;lessonBreadcrumb.textContent=levelName(x.grade)+' · '+x.book.name+' · '+x.unit.title;lessonPlayerTitle.textContent=x.title;lessonPageCounter.textContent='الصفحة '+(p+1)+' من 10';
   lessonProgressDots.innerHTML='';for(let i=0;i<10;i++){const d=document.createElement('i');if(i<p)d.className='done';if(i===p)d.className='active';lessonProgressDots.appendChild(d);}
   lessonBackBtn.disabled=p===0;lessonAnswerStatus.textContent='';
-  if(p<=2){const e=explain(x,p);lessonPageContent.innerHTML='<span class="lesson-type">EXPLANATION '+(p+1)+' OF 3</span><h1>'+e.title+'</h1><p class="page-lead">'+e.lead+'</p><div class="explanation-grid">'+e.cards.map(c=>'<article class="explain-card"><span>LEARN</span><h3>'+c[0]+'</h3><p>'+c[1]+'</p></article>').join('')+'</div>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='← التالي';addNext('← الصفحة التالية');return;}
-  if(p===3){const e=example(x);lessonPageContent.innerHTML='<span class="lesson-type">WORKED EXAMPLE</span><h1>'+x.title+'</h1><p class="page-lead">Study one example before the questions.</p><article class="worked-example"><small>EXAMPLE</small><h3>'+e[0]+'</h3><div class="example-steps">'+e.slice(1).map((s,i)=>'<div><strong>Step '+(i+1)+':</strong> '+s+'</div>').join('')+'</div></article>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='← ابدأ الأسئلة';addNext('← ابدأ الأسئلة');return;}
+  if(p<=2){const e=explain(x,p);lessonPageContent.innerHTML='<span class="lesson-type">شرح '+(p+1)+' من 3</span><h1>'+e.title+'</h1><p class="page-lead">'+e.lead+'</p><div class="explanation-grid">'+e.cards.map(c=>'<article class="explain-card"><span>تعلّم</span><h3>'+c[0]+'</h3><p>'+c[1]+'</p></article>').join('')+'</div>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='← التالي';addNext('← الصفحة التالية');return;}
+  if(p===3){const e=example(x);lessonPageContent.innerHTML='<span class="lesson-type">مثال محلول</span><h1>'+x.title+'</h1><p class="page-lead">ادرس مثالًا واحدًا قبل البدء بالأسئلة.</p><article class="worked-example"><small>مثال</small><h3>'+e[0]+'</h3><div class="example-steps">'+e.slice(1).map((s,i)=>'<div><strong>الخطوة '+(i+1)+':</strong> '+s+'</div>').join('')+'</div></article>';lessonNextBtn.disabled=false;lessonNextBtn.textContent='← ابدأ الأسئلة';addNext('← ابدأ الأسئلة');return;}
   renderQPage(x,p);
 }
 function renderQPage(x,p){
-  pageAnswers={};const qs=pageQuestions(x,p);lessonPageContent.innerHTML='<div class="question-page-head"><div><span class="lesson-type">QUESTIONS · PAGE '+(p-3)+' OF 6</span><h1>'+x.title+'</h1></div><span id="questionScore" class="question-score">0 / 10 answered</span></div><p class="page-lead">Answer all 10 questions to continue.</p><div id="questionList" class="question-list"></div>';
+  pageAnswers={};const qs=pageQuestions(x,p);lessonPageContent.innerHTML='<div class="question-page-head"><div><span class="lesson-type">أسئلة · الصفحة '+(p-3)+' من 6</span><h1>'+x.title+'</h1></div><span id="questionScore" class="question-score">0 / 10 مجاب</span></div><p class="page-lead">أجب عن الأسئلة العشرة للمتابعة.</p><div id="questionList" class="question-list"></div>';
   const list=document.getElementById('questionList');qs.forEach((z,i)=>{const card=document.createElement('article');card.className='question-card';card.innerHTML='<div class="question-title"><span class="question-number">'+(i+1)+'</span><strong>'+z.prompt+'</strong></div><div class="answer-options"></div><div class="question-feedback"></div>';const opts=card.querySelector('.answer-options'),fb=card.querySelector('.question-feedback');
     z.options.forEach(o=>{const b=document.createElement('button');b.type='button';b.textContent=o;b.onclick=()=>{if(pageAnswers[i])return;const ok=o===z.correct;pageAnswers[i]={correct:ok};card.classList.add(ok?'correct':'wrong');fb.textContent=ok?'إجابة صحيحة!':'الإجابة الصحيحة: '+z.correct;[...opts.children].forEach(x=>{x.disabled=true;if(x.textContent===z.correct)x.classList.add('correct-answer');else if(x===b&&!ok)x.classList.add('wrong-answer');});gate();};opts.appendChild(b);});list.appendChild(card);});
   lessonNextBtn.disabled=true;lessonNextBtn.textContent=p===9?'إنهاء الدرس ✓':'← الصفحة التالية';addNext(p===9?'إنهاء الدرس ✓':'← الصفحة التالية',true);gate();
