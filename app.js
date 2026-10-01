@@ -1,19 +1,19 @@
-const LEVELS=[...Array.from({length:12},(_,i)=>({grade:i+1,name:'Grade '+(i+1),badge:String(i+1)})),{grade:13,name:'College',badge:'C'}];
+const LEVELS=[...Array.from({length:12},(_,i)=>({grade:i+1,name:'الصف '+(i+1),badge:String(i+1)})),{grade:13,name:'الجامعة',badge:'ج'}];
 
 const META={
-math:['Mathematics','➗','Numbers, algebra, geometry, data, and problem solving.'],
-science:['Science','🔬','Life, Earth, matter, energy, investigation, and scientific thinking.'],
-english:['English','🔤','Reading, writing, vocabulary, grammar, and communication.'],
-arabic:['Arabic','📖','Arabic reading, writing, grammar, vocabulary, and expression.'],
-islamic:['Islamic Studies','☪️','Faith, worship, Quran, manners, and Islamic values.'],
-'computer-science':['Computer Science','💻','Computers, digital tools, data, algorithms, and technology.'],
-art:['Art','🎨','Drawing, color, design, media, and creativity.'],
-sports:['Sports & Activity','⚽','Movement, fitness, coordination, teamwork, and health.'],
-geography:['Geography','🌍','Maps, places, environments, regions, and the world.'],
-history:['History','🏛️','People, civilizations, events, and historical thinking.'],
-programming:['Programming','</>','Coding, logic, software, and projects.'],
-physics:['Physics','⚛️','Motion, forces, energy, waves, and electricity.'],
-chemistry:['Chemistry','🧪','Matter, atoms, bonding, reactions, and chemical systems.']
+math:['الرياضيات','➗','الأعداد والجبر والهندسة والبيانات وحل المشكلات.'],
+science:['العلوم','🔬','الحياة والأرض والمادة والطاقة والاستقصاء والتفكير العلمي.'],
+english:['اللغة الإنجليزية','🔤','القراءة والكتابة والمفردات والقواعد والتواصل.'],
+arabic:['اللغة العربية','📖','القراءة والكتابة والقواعد والمفردات والتعبير.'],
+islamic:['الدراسات الإسلامية','☪️','العقيدة والعبادات والقرآن والآداب والقيم الإسلامية.'],
+'computer-science':['علوم الحاسب','💻','الحاسب والأدوات الرقمية والبيانات والخوارزميات والتقنية.'],
+art:['الفنون','🎨','الرسم والألوان والتصميم والوسائط والإبداع.'],
+sports:['الرياضة والنشاط','⚽','الحركة واللياقة والتوافق والعمل الجماعي والصحة.'],
+geography:['الجغرافيا','🌍','الخرائط والأماكن والبيئات والمناطق والعالم.'],
+history:['التاريخ','🏛️','الشعوب والحضارات والأحداث والتفكير التاريخي.'],
+programming:['البرمجة','</>','البرمجة والمنطق والبرمجيات والمشروعات.'],
+physics:['الفيزياء','⚛️','الحركة والقوى والطاقة والموجات والكهرباء.'],
+chemistry:['الكيمياء','🧪','المادة والذرات والروابط والتفاعلات والأنظمة الكيميائية.']
 };
 const ORDER=['math','science','english','arabic','islamic','computer-science','art','sports','geography','history','programming','physics','chemistry'];
 
@@ -119,7 +119,7 @@ function curriculum(g){
     return {id,name,icon,description:(g===13?'College':('Grade '+g))+' '+description,units:unitsFor(id,g).map(u=>({title:u,lessons:lessonsFor(u,g)}))};
   });
 }
-function levelName(g){return g===13?'College':'Grade '+g;}
+function levelName(g){return g===13?'الجامعة':'الصف '+g;}
 
 const gradeGrid=document.getElementById('gradeGrid'),gradeHome=document.getElementById('gradeHome'),booksView=document.getElementById('booksView');
 const backToGradesBtn=document.getElementById('backToGradesBtn'),currentGradeTitle=document.getElementById('currentGradeTitle'),currentGradeSummary=document.getElementById('currentGradeSummary'),currentGradeBadge=document.getElementById('currentGradeBadge');
@@ -146,31 +146,31 @@ function renderGradeGrid(){
   LEVELS.forEach(l=>{
     const n=subjectIdsForGrade(l.grade).length,b=document.createElement('button');
     b.className='grade-card'+(l.grade===13?' college-card':'');b.type='button';
-    b.innerHTML='<span class="grade-card-badge">'+l.badge+'</span><span class="grade-card-copy"><strong>'+l.name+'</strong><small>'+n+' subject books · '+(n*25)+' lessons</small></span><span class="grade-card-arrow">→</span>';
+    b.innerHTML='<span class="grade-card-badge">'+l.badge+'</span><span class="grade-card-copy"><strong>'+l.name+'</strong><small>'+n+' كتب · '+(n*25)+' درسًا</small></span><span class="grade-card-arrow">→</span>';
     b.onclick=()=>selectGrade(l.grade);gradeGrid.appendChild(b);
   });
 }
 function selectGrade(g){
   activeGrade=g;activeSubjects=curriculum(g);gradeHome.hidden=true;booksView.hidden=false;subjectSearch.value='';
-  currentGradeTitle.textContent=levelName(g);currentGradeBadge.textContent=g===13?'C':g;
-  currentGradeSummary.textContent=activeSubjects.length+' subject books · 5 units each · 25 lessons per book';
-  booksHeading.textContent=levelName(g)+' books';renderBooks();window.scrollTo({top:0,behavior:'smooth'});
+  currentGradeTitle.textContent=levelName(g);currentGradeBadge.textContent=g===13?'ج':g;
+  currentGradeSummary.textContent=activeSubjects.length+' كتابًا · 5 وحدات لكل كتاب · 25 درسًا لكل كتاب';
+  booksHeading.textContent='كتب '+levelName(g);renderBooks();window.scrollTo({top:0,behavior:'smooth'});
 }
 function showGradeHome(){activeGrade=null;activeSubjects=[];booksView.hidden=true;gradeHome.hidden=false;window.scrollTo({top:0,behavior:'smooth'});}
 function bookDone(book){let n=0;book.units.forEach((u,ui)=>u.lessons.forEach((_,li)=>{if(complete(activeGrade,book.id,ui,li))n++;}));return n;}
 function renderBooks(){
   const q=subjectSearch.value.toLowerCase().trim(),arr=activeSubjects.filter(b=>!q||b.name.toLowerCase().includes(q));
-  subjectCount.textContent=arr.length+' books · '+(arr.length*25)+' lessons';subjectGrid.innerHTML='';
+  subjectCount.textContent=arr.length+' كتب · '+(arr.length*25)+' درسًا';subjectGrid.innerHTML='';
   arr.forEach(book=>{
     const d=bookDone(book),b=document.createElement('button');b.className='subject-card';b.type='button';
-    b.innerHTML='<span class="subject-age">'+levelName(activeGrade)+'</span><span class="subject-icon">'+book.icon+'</span><h3>'+book.name+'</h3><p>'+book.description+'</p><div class="subject-footer"><span>5 units · 25 lessons</span><span>'+Math.round(d/25*100)+'% complete</span></div>';
+    b.innerHTML='<span class="subject-age">'+levelName(activeGrade)+'</span><span class="subject-icon">'+book.icon+'</span><h3>'+book.name+'</h3><p>'+book.description+'</p><div class="subject-footer"><span>5 وحدات · 25 درسًا</span><span>'+Math.round(d/25*100)+'% مكتمل</span></div>';
     b.onclick=()=>openBook(book.id);subjectGrid.appendChild(b);
   });
 }
 function openBook(id){
   const book=activeSubjects.find(x=>x.id===id);if(!book)return;activeSubjectId=id;const d=bookDone(book);
   modalIcon.textContent=book.icon;modalAge.textContent='VERTEX LEARNING · '+levelName(activeGrade);modalTitle.textContent=book.name;modalDescription.textContent=book.description;
-  subjectSummary.innerHTML='<span>5 units</span><span>25 lessons</span><span>'+d+' completed</span>';renderUnits(book);modal.hidden=false;document.body.style.overflow='hidden';
+  subjectSummary.innerHTML='<span>5 وحدات</span><span>25 درسًا</span><span>'+d+' مكتمل</span>';renderUnits(book);modal.hidden=false;document.body.style.overflow='hidden';
 }
 function closeBook(){modal.hidden=true;document.body.style.overflow='';activeSubjectId=null;}
 function renderUnits(book){
@@ -179,11 +179,11 @@ function renderUnits(book){
     let done=0;u.lessons.forEach((_,li)=>{if(complete(activeGrade,book.id,ui,li))done++;});
     const card=document.createElement('section');card.className='unit-card'+(ui===0?' open':'');
     const head=document.createElement('button');head.type='button';head.className='unit-head';
-    head.innerHTML='<span class="unit-head-left"><span class="unit-number">'+(ui+1)+'</span><span><strong>'+u.title+'</strong><small>5 lessons</small></span></span><span class="unit-progress">'+done+'/5 complete</span>';
+    head.innerHTML='<span class="unit-head-left"><span class="unit-number">'+(ui+1)+'</span><span><strong>'+u.title+'</strong><small>5 دروس</small></span></span><span class="unit-progress">'+done+'/5 مكتمل</span>';
     const list=document.createElement('div');list.className='unit-lessons';
     u.lessons.forEach((title,li)=>{
       const done=complete(activeGrade,book.id,ui,li),state=lessonState[pKey(activeGrade,book.id,ui,li)]||{},row=document.createElement('div');row.className='unit-lesson'+(done?' completed':'');
-      row.innerHTML='<span class="unit-lesson-number">'+(li+1)+'</span><div><strong>'+title+'</strong><small>10 pages · 3 explanations · 1 example · 60 questions</small></div><button type="button">'+(done?'Review lesson':Number(state.page)>0?'Continue':'Start lesson')+'</button>';
+      row.innerHTML='<span class="unit-lesson-number">'+(li+1)+'</span><div><strong>'+title+'</strong><small>10 صفحات · 3 شروحات · مثال واحد · 60 سؤالًا</small></div><button type="button">'+(done?'مراجعة الدرس':Number(state.page)>0?'متابعة':'ابدأ الدرس')+'</button>';
       row.querySelector('button').onclick=()=>openLesson(book.id,ui,li);list.appendChild(row);
     });
     head.onclick=()=>card.classList.toggle('open');card.append(head,list);lessonList.appendChild(card);
